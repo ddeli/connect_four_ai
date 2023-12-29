@@ -59,7 +59,7 @@ def connected_four_bitstring(binary_str: str, player: BoardPiece) -> bool:
     return False
 
 
-def apply_player_action_bitstring(bitstring_array: str, action: PlayerAction, player: BoardPiece) -> str:
+def apply_player_action_bitstring(bitstring_array: str, action: PlayerAction, player: BoardPiece):#-> str:
     if player == 1:
         binary_player = bitstring_array[0]
         binary_opponent = bitstring_array[1]
@@ -67,13 +67,13 @@ def apply_player_action_bitstring(bitstring_array: str, action: PlayerAction, pl
         binary_player = bitstring_array[1]
         binary_opponent = bitstring_array[0]
     for i in range(0, 6):
-        if binary_player[action*7+5-i] == '0' and binary_opponent[action*7+5-i] == '0':
+        if binary_player[action*7+i] == '0' and binary_opponent[action*7+i] == '0':
             string_list = list(binary_player)
-            string_list[action*7+5-i] = '1'
+            string_list[action*7+i] = '1'
             modified_binary = ''.join(string_list)
             bitstring_array[player - 1] = modified_binary
             break
-    return bitstring_array
+    #return bitstring_array
 
 
 def calculate_score_bitstring(binary_array: str) -> int:
@@ -131,4 +131,10 @@ def check_end_state_bitstring(binary: str, player: BoardPiece) -> GameState:
     if check_for_draw_bitstring(binary):
         return GameState.IS_DRAW
     return GameState.STILL_PLAYING
+
+
+def copy_bitstring_array(bitstring_array) -> str:
+    bitstring1 = '' + bitstring_array[0]
+    bitstring2 = '' + bitstring_array[1]
+    return [bitstring1,bitstring2]
 

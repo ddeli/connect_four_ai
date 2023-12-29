@@ -1,9 +1,9 @@
 import numpy as np
 
-from game_utils import BoardPiece, PlayerAction, SavedState, NO_PLAYER, GameState
-from game_utils import apply_player_action, next_player, calculate_score, check_end_state
-from bitstring import board_to_bitstring, connected_four_bitstring, apply_player_action_bitstring, \
-    calculate_score_bitstring, bitstring_to_board, check_for_draw_bitstring, check_end_state_bitstring
+from game_utils import BoardPiece, PlayerAction, SavedState, GameState, next_player
+from bitstring import board_to_bitstring, apply_player_action_bitstring, \
+    calculate_score_bitstring, bitstring_to_board, check_end_state_bitstring, \
+    copy_bitstring_array
 from typing import Optional
 
 # Global counter variables for debugging and profiling
@@ -30,18 +30,18 @@ def generate_move_minimax_bitstring(
     global counter_alpha_beta_cut
     counter_alpha_beta_cut = 0
 
-    [score, action] = minimax_bitstring(board_to_bitstring(board), player, True, -10000, 10000, 6, saved_state)
+    [score, action] = minimax_bitstring(board_to_bitstring(board), player, True, -10000, 10000, 9, saved_state)
 
     # Some console prints for debugging only
 
-    print("Final Score: ")
-    print(score)
-    # print("Next Move on Column: ")
-    # print(action)
-    # print("Number of simulated rounds: ")
-    # print(counter_moves)
-    # print("Number of Alpha-Beta Cuts: ")
-    # print(counter_alpha_beta_cut)
+     #print("Final Score: ")
+     #print(score)
+     #print("Next Move on Column: ")
+     #print(action)
+     #print("Number of simulated rounds: ")
+     #print(counter_moves)
+     #print("Number of Alpha-Beta Cuts: ")
+     #print(counter_alpha_beta_cut)
     return action, saved_state
 
 
@@ -63,7 +63,7 @@ def minimax_bitstring(bitstring_array: str, player: BoardPiece, is_maximizing: b
     """
     This is the actual implementation of the minimax algorithm based on the alph-beta pruning
 
-    :param bitstring_array: representation of the current game state as a np.ndarray
+    :param bitstring_array: representation of the current game state as a pair of bitstrings
     :param player: current player
     :param is_maximizing:
     :param alpha: parameter for the Pruning mechanism which can only manipulated by player1
@@ -76,15 +76,11 @@ def minimax_bitstring(bitstring_array: str, player: BoardPiece, is_maximizing: b
     # increment_counter_moves()
     best_move = 0
 
-    for i in range(0, 7):
-        col = np.int8((i+3) % 7)  # shift first move 4th column to increase winning chances
+    for col in range(0, 7):
         if (bitstring_array[0])[col*7+5] == '0' and (bitstring_array[1])[col*7+5] == '0':
-            print("This is working")
-            print("depth: " + str(depth))
-
-            new_bitstring_array = bitstring_array
-            apply_player_action_bitstring(new_bitstring_array, col, player)
-            game_state_check = check_end_state_bitstring(new_bitstring_array, player)
+            tmp_bitstring_array_copy = copy_bitstring_array(bitstring_array)
+            apply_player_action_bitstring(bitstring_array, col, player)
+            game_state_check = check_end_state_bitstring(bitstring_array, player)
 
             if game_state_check != GameState.STILL_PLAYING:
                 if game_state_check == GameState.IS_DRAW:
@@ -92,10 +88,10 @@ def minimax_bitstring(bitstring_array: str, player: BoardPiece, is_maximizing: b
                 if game_state_check == GameState.IS_WIN:
                     action = col
                     if is_maximizing:
-                        score = calculate_score_bitstring(new_bitstring_array) * (
+                        score = calculate_score_bitstring(bitstring_array) * (
                                     depth + 1)  # Plus 1 to prevent the score to be 0 at depth 0
                     else:
-                        score = calculate_score_bitstring(new_bitstring_array) * -1 * (depth + 1)
+                        score = calculate_score_bitstring(bitstring_array) * -1 * (depth + 1)
                     return score, action
 
             if depth == 0:
@@ -104,8 +100,8 @@ def minimax_bitstring(bitstring_array: str, player: BoardPiece, is_maximizing: b
                 return score, action
 
             # Recursive calling of the minimax() function
-            [score, action] = minimax_bitstring(new_bitstring_array, next_player(player), not is_maximizing, alpha, beta, depth - 1,
-                                                saved_state)
+            [score, action] = minimax_bitstring(bitstring_array, next_player(player), not is_maximizing, alpha, beta, depth - 1, saved_state)
+            bitstring_array = copy_bitstring_array(tmp_bitstring_array_copy)
             if is_maximizing:
                 if score > alpha:
                     alpha = score

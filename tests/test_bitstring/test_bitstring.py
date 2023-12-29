@@ -207,7 +207,7 @@ def test_calculate_score_bitstring():
     assert (score == 34)
 
 
-def test_make_move_bitstring():
+def test_apply_player_action_bitstring():
     set_board = initialize_game_state()
 
     set_board[0, 0] = PLAYER1
@@ -226,13 +226,35 @@ def test_make_move_bitstring():
     print()
     print(bitstring)
 
-    new_bitstring = apply_player_action_bitstring(bitstring, 0, PLAYER2)
-    print(new_bitstring)
+    apply_player_action_bitstring(bitstring, 0, PLAYER2)
+    print(bitstring)
 
-    re_board = bitstring_to_board(new_bitstring, 1) + bitstring_to_board(new_bitstring, 2)
+    re_board = bitstring_to_board(bitstring, 1) + bitstring_to_board(bitstring, 2)
     print(re_board)
     # bitstring to pretty print
-    print(pretty_print_board(bitstring_to_board(new_bitstring, 1) + bitstring_to_board(new_bitstring, 2)))
+    print(pretty_print_board(bitstring_to_board(bitstring, 1) + bitstring_to_board(bitstring, 2)))
+
+
+def test_apply_player_action_bitstring_empty_board():
+    set_board = initialize_game_state()
+
+    bitstring = board_to_bitstring(set_board)
+    print()
+    print(pretty_print_board(set_board))
+    print()
+    print(bitstring)
+
+    apply_player_action_bitstring(bitstring, 0, PLAYER1)
+    for i in range(10):
+        new_bitstring = apply_player_action_bitstring(bitstring, 0, PLAYER1)
+
+    print(bitstring)
+
+    re_board = bitstring_to_board(bitstring, 1) + bitstring_to_board(bitstring, 2)
+    print(re_board)
+    # bitstring to pretty print
+    print(pretty_print_board(bitstring_to_board(bitstring, 1) + bitstring_to_board(bitstring, 2)))
+
 
 
 def test_check_for_draw_bitstring():
