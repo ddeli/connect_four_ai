@@ -1,6 +1,6 @@
 import numpy as np
 
-from game_utils import BoardPiece, PlayerAction, BOARD_COLS, BOARD_ROWS
+from game_utils import BoardPiece, PlayerAction, BOARD_COLS, BOARD_ROWS, GameState
 
 
 def board_to_bitstring(board: np.ndarray) -> str:
@@ -13,7 +13,7 @@ def board_to_bitstring(board: np.ndarray) -> str:
     """
     bitstring_array = ['', '']
 
-    for col in range(6):
+    for col in range(7):
 
         for row in range(6):
             if board[row, col] == 1:
@@ -30,7 +30,7 @@ def board_to_bitstring(board: np.ndarray) -> str:
     return bitstring_array
 
 
-def connect_four_bitstring(binary_str: str, player: BoardPiece) -> bool:
+def connected_four_bitstring(binary_str: str, player: BoardPiece) -> bool:
     """
     Returns True if there are four adjacent pieces equal to `player` arranged
     in either a horizontal, vertical, or diagonal line. Returns False otherwise.
@@ -106,3 +106,29 @@ def bitstring_to_board(binary_array: str, player: BoardPiece) -> np.ndarray:
                 board[j, 5 - i] = 2
 
     return board
+
+
+def check_for_draw_bitstring(binary: str) -> bool:
+    bin_player1 = binary[0]
+    bin_player2 = binary[1]
+
+    for i in range(0, 7):
+        if bin_player1[5+i*7] == '0' or bin_player2[5+i*7] == '0':
+            return False
+    return True
+def check_end_state_bitstring(binary: str, player: BoardPiece) -> GameState:
+    """
+    Returns the current game state for the current `player`, i.e. has their last
+    action won (GameState.IS_WIN) or drawn (GameState.IS_DRAW) the game,
+    or is play still ongoing (GameState.STILL_PLAYING)?
+
+    :param: board: current board state as a nparray
+    :param: player: current player
+    :return: GameState: Evaluation of the GameState after a move
+    """
+    if connected_four_bitstring(binary, player):
+        return GameState.IS_WIN
+    if check_for_draw_bitstring(binary):
+        return GameState.IS_DRAW
+    return GameState.STILL_PLAYING
+
