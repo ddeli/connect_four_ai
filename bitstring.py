@@ -59,21 +59,21 @@ def connected_four_bitstring(binary_str: str, player: BoardPiece) -> bool:
     return False
 
 
-def make_move_bitstring(binary_array: str, action: PlayerAction, player: BoardPiece) -> str:
+def apply_player_action_bitstring(bitstring_array: str, action: PlayerAction, player: BoardPiece) -> str:
     if player == 1:
-        binary_player = binary_array[0]
-        binary_opponent = binary_array[1]
+        binary_player = bitstring_array[0]
+        binary_opponent = bitstring_array[1]
     else:
-        binary_player = binary_array[1]
-        binary_opponent = binary_array[0]
+        binary_player = bitstring_array[1]
+        binary_opponent = bitstring_array[0]
     for i in range(0, 6):
         if binary_player[action*7+5-i] == '0' and binary_opponent[action*7+5-i] == '0':
             string_list = list(binary_player)
             string_list[action*7+5-i] = '1'
             modified_binary = ''.join(string_list)
-            binary_array[player - 1] = modified_binary
+            bitstring_array[player - 1] = modified_binary
             break
-    return binary_array
+    return bitstring_array
 
 
 def calculate_score_bitstring(binary_array: str) -> int:
@@ -101,9 +101,9 @@ def bitstring_to_board(binary_array: str, player: BoardPiece) -> np.ndarray:
     for i, line in enumerate(split_array[::-1]):
         for j, char in enumerate(line):
             if char == '1' and player == 1:
-                board[j, 5 - i] = 1
+                board[j, 6 - i] = 1
             if char == '1' and player == 2:
-                board[j, 5 - i] = 2
+                board[j, 6 - i] = 2
 
     return board
 

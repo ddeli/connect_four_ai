@@ -1,5 +1,5 @@
 from game_utils import initialize_game_state, PLAYER1, PLAYER2, pretty_print_board
-from bitstring import board_to_bitstring, connected_four_bitstring, make_move_bitstring, calculate_score_bitstring, \
+from bitstring import board_to_bitstring, connected_four_bitstring, apply_player_action_bitstring, calculate_score_bitstring, \
     bitstring_to_board, check_for_draw_bitstring, check_end_state_bitstring
 
 
@@ -226,7 +226,7 @@ def test_make_move_bitstring():
     print()
     print(bitstring)
 
-    new_bitstring = make_move_bitstring(bitstring, 0, PLAYER2)
+    new_bitstring = apply_player_action_bitstring(bitstring, 0, PLAYER2)
     print(new_bitstring)
 
     re_board = bitstring_to_board(new_bitstring, 1) + bitstring_to_board(new_bitstring, 2)
