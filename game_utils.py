@@ -46,7 +46,41 @@ def initialize_game_state() -> np.ndarray:
     """
     Returns an ndarray, shape BOARD_SHAPE and data type (dtype) BoardPiece, initialized to 0 (NO_PLAYER).
     """
-    raise NotImplementedError
+    array = np.zeros(BOARD_SHAPE, BoardPiece)
+    return array
+
+
+def set_board() -> np.ndarray:
+    """
+    This is a helper function to set a specific board state in main.py at the beginning of a game for debugging purpose
+
+    :return: the selected preconfigured board
+    """
+    board1 = np.array([
+        [1, 2, 1, 2, 2, 1, 1],
+        [1, 2, 1, 2, 1, 2, 1],
+        [2, 0, 1, 1, 2, 1, 1],
+        [1, 0, 2, 1, 2, 2, 2],
+        [2, 0, 0, 0, 2, 2, 1],
+        [0, 0, 0, 0, 0, 1, 0]], dtype=int)
+
+    board2 = np.array([
+        [1, 1, 2, 1, 2, 2, 2],
+        [1, 1, 0, 2, 2, 1, 2],
+        [1, 1, 0, 2, 2, 0, 2],
+        [2, 2, 0, 0, 1, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0]], dtype=int)
+
+    board3 = np.array([
+        [2, 1, 1, 2, 0, 1, 0],
+        [0, 2, 2, 1, 0, 1, 0],
+        [0, 1, 2, 2, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0]], dtype=int)
+
+    return board3
 
 
 def pretty_print_board(board: np.ndarray) -> str:
@@ -65,16 +99,48 @@ def pretty_print_board(board: np.ndarray) -> str:
     |==============|
     |0 1 2 3 4 5 6 |
     """
-    raise NotImplementedError()
+    board_head = "|==============|\n"
+    board_body = ""
+    board_bottom = "|==============|\n" \
+                   "|0 1 2 3 4 5 6 |"
+
+    for row in range(board.shape[0] - 1, -1, -1):
+        board_body = board_body + "|"
+        for col in range(board.shape[1]):
+            if board[row, col] == 0:
+                board_body = board_body + "  "
+            elif board[row, col] == 1:
+                board_body = board_body + "X "
+            else:
+                board_body = board_body + "O "
+        board_body = board_body + "|\n"
+
+    complete_board = board_head + board_body + board_bottom
+
+    return complete_board
 
 
 def string_to_board(pp_board: str) -> np.ndarray:
     """
-    Takes the output of pretty_print_board and turns it back into an ndarray.
-    This is quite useful for debugging, when the agent crashed and you have the last
+    Takes the output of pretty_print_board and turns it back into a ndarray.
+    This is quite useful for debugging, when the agent crashed, and you have the last
     board state as a string.
+
+    :param pp_board: current board state as string representation
+    :return: board: representation of the board state as a nparray
     """
-    raise NotImplementedError()
+
+    # Define the mapping of characters to values ('' for empty, 'X' for Player 1, 'O' for Player 2)
+    char_to_value = {'': 0, 'X': 1, 'O': 2}
+
+    # Initialize an empty 6x7 Connect Four board
+    board = np.zeros((6, 7), dtype=np.int8)
+    lines = pp_board.split('\n')[1:7]  # Extract the lines containing the board
+    for i, line in enumerate(lines):
+        for j, char in enumerate(line[1:14:2]):  # Skip the leading '|'
+            if char in char_to_value:
+                board[INDEX_HIGHEST_ROW - i, j] = char_to_value[char]
+    return board
 
 
 def apply_player_action(board: np.ndarray, action: PlayerAction, player: BoardPiece):
@@ -82,25 +148,99 @@ def apply_player_action(board: np.ndarray, action: PlayerAction, player: BoardPi
     Sets board[i, action] = player, where i is the lowest open row. The input
     board should be modified in place, such that it's not necessary to return
     something.
+
+    :param: board: current board state as a ndarray
+    :param: action: player move to apply
+    :param: player: current player
     """
-    raise NotImplementedError()
+
+    for i in range(BOARD_ROWS):
+        if board[i, action] == 0:
+            board[i, action] = player
+            break
 
 
 def connected_four(board: np.ndarray, player: BoardPiece) -> bool:
     """
     Returns True if there are four adjacent pieces equal to `player` arranged
     in either a horizontal, vertical, or diagonal line. Returns False otherwise.
+
+    :param: board: current board state as a ndarray
+    :param: player: current player
+    :return: bool: determines if player has four connected pieces
     """
-    raise NotImplementedError()
+    for i in range(BOARD_ROWS):
+        for j in range(BOARD_COLS):
+            if board[i, j] == player:
+                # Check horizontal
+                if j + 3 < BOARD_COLS:
+                    if all(board[i, j + k] == player for k in range(4)):
+                        return True
+                # Check vertical
+                if i + 3 < BOARD_ROWS:
+                    if all(board[i + k, j] == player for k in range(4)):
+                        return True
+                # Check diagonal (up-right)
+                if i + 3 < BOARD_ROWS:
+                    if j + 3 < BOARD_COLS:
+                        if all(board[i + k, j + k] == player for k in range(4)):
+                            return True
+                # Check diagonal (up-left)
+                if i + 3 < BOARD_ROWS:
+                    if j - 3 >= 0:
+                        if all(board[i + k, j - k] == player for k in range(4)):
+                            return True
+    return False
+
+
+def connected_three(board: np.ndarray, player: BoardPiece) -> bool:
+    """
+    Returns True if there are three adjacent pieces equal to `player` arranged
+    in either a horizontal, vertical, or diagonal line. Returns False otherwise.
+
+    :param: board: current board state as a ndarray
+    :param: player: current player
+    :return: bool: determines if player has three connected pieces
+    """
+    for i in range(BOARD_ROWS):
+        for j in range(BOARD_COLS):
+            if board[i, j] == player:
+                # Check horizontal
+                if j + 2 < BOARD_COLS:
+                    if all(board[i, j + k] == player for k in range(3)):
+                        return True
+                # Check vertical
+                if i + 2 < BOARD_ROWS:
+                    if all(board[i + k, j] == player for k in range(3)):
+                        return True
+                # Check diagonal (up-right)
+                if i + 2 < BOARD_ROWS:
+                    if j + 2 < BOARD_COLS:
+                        if all(board[i + k, j + k] == player for k in range(3)):
+                            return True
+                # Check diagonal (up-left)
+                if i + 2 < BOARD_ROWS:
+                    if j - 2 >= 0:
+                        if all(board[i + k, j - k] == player for k in range(3)):
+                            return True
+    return False
 
 
 def check_end_state(board: np.ndarray, player: BoardPiece) -> GameState:
     """
     Returns the current game state for the current `player`, i.e. has their last
     action won (GameState.IS_WIN) or drawn (GameState.IS_DRAW) the game,
-    or is play still on-going (GameState.STILL_PLAYING)?
+    or is play still ongoing (GameState.STILL_PLAYING)?
+
+    :param: board: current board state as a nparray
+    :param: player: current player
+    :return: GameState: Evaluation of the GameState after a move
     """
-    raise NotImplementedError()
+    if np.all(board != NO_PLAYER):
+        return GameState.IS_DRAW
+    if connected_four(board, player):
+        return GameState.IS_WIN
+    return GameState.STILL_PLAYING
 
 
 def check_move_status(board: np.ndarray, column: any) -> MoveStatus:
@@ -131,3 +271,31 @@ def check_move_status(board: np.ndarray, column: any) -> MoveStatus:
         return MoveStatus.FULL_COLUMN
 
     return MoveStatus.IS_VALID
+
+
+def next_player(player: BoardPiece) -> BoardPiece:
+    """
+    A function to switch the player after each calculation step of the minimax agent
+    :param player: current player
+    :return: next player
+    """
+    if player == PLAYER1:
+        player = PLAYER2
+    elif player == PLAYER2:
+        player = PLAYER1
+    return player
+
+
+def calculate_score(board: np.ndarray) -> int:
+    """
+    A function to evaluate each move and give it a score
+    :param board: current game state
+    :return: calculated score of a move
+    """
+    score = 0
+    for i in range(6):
+        for j in range(7):
+            if board[i, j] == NO_PLAYER:
+                score += 1
+    return score
+
