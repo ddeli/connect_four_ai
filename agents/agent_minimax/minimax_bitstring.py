@@ -79,8 +79,8 @@ def minimax_bitstring(bitstring_array: str, player: BoardPiece, is_maximizing: b
     for col in range(0, 7):
         if (bitstring_array[0])[col*7+5] == '0' and (bitstring_array[1])[col*7+5] == '0':
             tmp_bitstring_array_copy = copy_bitstring_array(bitstring_array)
-            apply_player_action_bitstring(bitstring_array, col, player)
-            game_state_check = check_end_state_bitstring(bitstring_array, player)
+            apply_player_action_bitstring(tmp_bitstring_array_copy, col, player)
+            game_state_check = check_end_state_bitstring(tmp_bitstring_array_copy, player)
 
             if game_state_check != GameState.STILL_PLAYING:
                 if game_state_check == GameState.IS_DRAW:
@@ -88,10 +88,10 @@ def minimax_bitstring(bitstring_array: str, player: BoardPiece, is_maximizing: b
                 if game_state_check == GameState.IS_WIN:
                     action = col
                     if is_maximizing:
-                        score = calculate_score_bitstring(bitstring_array) * (
+                        score = calculate_score_bitstring(tmp_bitstring_array_copy) * (
                                     depth + 1)  # Plus 1 to prevent the score to be 0 at depth 0
                     else:
-                        score = calculate_score_bitstring(bitstring_array) * -1 * (depth + 1)
+                        score = calculate_score_bitstring(tmp_bitstring_array_copy) * -1 * (depth + 1)
                     return score, action
 
             if depth == 0:
@@ -100,8 +100,8 @@ def minimax_bitstring(bitstring_array: str, player: BoardPiece, is_maximizing: b
                 return score, action
 
             # Recursive calling of the minimax() function
-            [score, action] = minimax_bitstring(bitstring_array, next_player(player), not is_maximizing, alpha, beta, depth - 1, saved_state)
-            bitstring_array = copy_bitstring_array(tmp_bitstring_array_copy)
+            [score, action] = minimax_bitstring(tmp_bitstring_array_copy, next_player(player), not is_maximizing, alpha, beta, depth - 1, saved_state)
+
             if is_maximizing:
                 if score > alpha:
                     alpha = score
