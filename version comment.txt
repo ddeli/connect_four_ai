@@ -1,0 +1,2 @@
+a646af13edcf810ff8dd69880d109b2ff7e44c84
+    sahand: initiated adding the negamax.py file and other files along with it.
