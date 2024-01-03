@@ -78,7 +78,7 @@ def minimax_bitstring(bitstring_array: str, player: BoardPiece, is_maximizing: b
 
     for col in range(0, 7):
         if (bitstring_array[0])[col*7+5] == '0' and (bitstring_array[1])[col*7+5] == '0':
-            tmp_bitstring_array_copy = copy_bitstring_array(bitstring_array)
+            tmp_bitstring_array_copy = bitstring_array.copy()
             apply_player_action_bitstring(tmp_bitstring_array_copy, col, player)
             game_state_check = check_end_state_bitstring(tmp_bitstring_array_copy, player)
 

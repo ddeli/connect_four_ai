@@ -138,3 +138,5 @@ def copy_bitstring_array(bitstring_array) -> str:
     bitstring2 = '' + bitstring_array[1]
     return [bitstring1,bitstring2]
 
+# TODO def get_valid_moves_bitstring(bitstring_array) -> int
+
