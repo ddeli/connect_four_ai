@@ -34,7 +34,9 @@ The main objective of this course is to teach fundamental concepts of 'software 
 ## Contributors
 
 - [Deniz Deli](ddeli)
-
+- [Sahand Sabahi]()
+- [Erblina Purelku]()
+- [Luisa Drescher]()
 
 
 
