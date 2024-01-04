@@ -58,8 +58,8 @@ def test_simplescore():
     print('\nsoce is:',score)
 
 def test_iterative_deepening():
-    board = np.array([1])
-    Node.skip_order = True
+    board = []
+    Node.skip_order = False
     Node.skip_null_window = False
 
     iterative_deepening(board)
