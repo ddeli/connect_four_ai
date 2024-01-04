@@ -1,7 +1,7 @@
 import numpy as np
 import copy
 
-from game_utils import *
+from game_utils_sahand import *
 from typing import Optional, Callable
 
 PlayerView = np.int8
@@ -81,10 +81,15 @@ def set_players_pieces(agent_piece):
     Node.opponent_piece = PLAYER2 if agent_piece == PLAYER1 else PLAYER1
 
 def check_terminal(board,playerview):
+    # note that playerview is one move ahead of the last player.
+    # minimizer checks the result for maximizer's last move and vice versa.
     lastpiece = Node.agent_piece if playerview == MinView else Node.opponent_piece
     terminal = False
+    terminal_score = None
     lastmove_result = check_end_state(board,lastpiece)
-    if lastmove_result == GameState.IS_WIN: terminal, terminal_score = True, 1000*playerview
+    # from the minimizer's point of view, maximizer's win is alway -1000.
+    # the same is true for maximizer's point of view.
+    if lastmove_result == GameState.IS_WIN: terminal, terminal_score = True, -1000
     elif lastmove_result == GameState.IS_DRAW: terminal, terminal_score = True, 0
     return terminal, terminal_score
 
