@@ -3,8 +3,8 @@ import numpy as np
 from typing import Optional, Callable
 
 PlayerView = np.int8
-MaxPlayer = PlayerView(1)
-MinPlayer = PlayerView(-1)
+MaxView = PlayerView(1)
+MinView = PlayerView(-1)
 
 MaxDepth = 3
 
@@ -69,10 +69,10 @@ def iterative_deepening(board, maxdepth:int = MaxDepth):
         get_pv()
         Node.reset()
 
-def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = float('inf'), player:PlayerView = MaxPlayer):
+def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView):
     Node.hitcount += 1
     if depth == 0:  
-        leaf_score = simplescore(parent_board)*player
+        leaf_score = simplescore(parent_board)*playerview
         Node.instances[Node.nodenumber].leaf_score = leaf_score
         return -leaf_score, Node.nodenumber
     
@@ -90,13 +90,13 @@ def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = f
         Node(Node.nodenumber, child_board, depth-1, parent=current_nodenumber, parent_move=move)
 
         if first_move or Node.skip_null_window:
-            board_score, child_nodenumber = negamax(child_board,depth-1,-beta, -alpha, -player)
+            board_score, child_nodenumber = negamax(child_board,depth-1,-beta, -alpha, -playerview)
         else:
             mark_nodenumber = Node.nodenumber
-            board_score, child_nodenumber = negamax(child_board,depth-1,-(alpha+1), -alpha, -player)
+            board_score, child_nodenumber = negamax(child_board,depth-1,-(alpha+1), -alpha, -playerview)
             if alpha < board_score < beta:
                 Node.nodenumber = mark_nodenumber
-                board_score, child_nodenumber = negamax(child_board,depth-1,-beta, -alpha, -player)
+                board_score, child_nodenumber = negamax(child_board,depth-1,-beta, -alpha, -playerview)
 
         best_score, best_move = update_bestscore_bestmove(board_score, best_score, move, best_move, current_nodenumber, child_nodenumber)
         prune, alpha, beta = check_prune(board_score, alpha, beta)
