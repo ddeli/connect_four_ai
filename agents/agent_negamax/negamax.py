@@ -80,9 +80,20 @@ def set_players_pieces(agent_piece):
     Node.agent_piece = agent_piece
     Node.opponent_piece = PLAYER2 if agent_piece == PLAYER1 else PLAYER1
 
+def check_terminal(board,playerview):
+    lastpiece = Node.agent_piece if playerview == MinView else Node.opponent_piece
+    terminal = False
+    lastmove_result = check_end_state(board,lastpiece)
+    if lastmove_result == GameState.IS_WIN: terminal, terminal_score = True, 1000*playerview
+    elif lastmove_result == GameState.IS_DRAW: terminal, terminal_score = True, 0
+    return terminal, terminal_score
+
 def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView):
     Node.hitcount += 1
-    if depth == 0:  
+
+    terminal, terminal_score = check_terminal(parent_board, playerview)
+    if terminal: return -terminal_score
+    elif depth == 0:  
         leaf_score = simplescore(parent_board)*playerview
         Node.instances[Node.nodenumber].leaf_score = leaf_score
         return -leaf_score, Node.nodenumber
