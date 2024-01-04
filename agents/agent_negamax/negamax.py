@@ -18,6 +18,7 @@ class Node():
 
     skip_order = False
     skip_null_window = False
+    skip_iterative_deepening = False
 
     def __init__(self, nodenumber, board=[], depth=None, parent=None, parent_move=None, best_score=None, best_move=None, best_child=None, leaf_score=None):
         self.nodenumber = nodenumber
@@ -59,7 +60,8 @@ class Node():
         for item in cls.instances: cls.instances[item].print_node()
 
 def iterative_deepening(board, maxdepth:int = MaxDepth):
-    for depth in range(1,maxdepth+1):
+    mindepth = maxdepth if Node.skip_iterative_deepening else 1
+    for depth in range(mindepth,maxdepth+1):
         print(f'\n***start analysing depth: {depth} ***')
         Node(Node.nodenumber,board, depth)
         negamax(board,depth)

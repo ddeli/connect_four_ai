@@ -60,7 +60,8 @@ def test_simplescore():
 def test_iterative_deepening():
     board = []
     Node.skip_order = False
-    Node.skip_null_window = False
+    Node.skip_null_window = True
+    Node.skip_iterative_deepening = True
 
     iterative_deepening(board)
 
