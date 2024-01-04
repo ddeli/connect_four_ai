@@ -41,17 +41,19 @@ class Node():
         parent = None if self.parent is None else self.parent
         parent_move = None if self.parent_move is None else self.parent_move
         child = None if self.best_child is None else self.best_child
+        pretty_board = pretty_print_board(self.board)
         print(f'''
-            nodenumber: {self.nodenumber}
-            board: {self.board}
-            depth: {self.depth}
-            parent: {parent}
-            parent_move: {parent_move}
-            best move: {self.best_move}
-            best child: {child}
-            best score: {self.best_score}
-            leaf score: {self.leaf_score}
-                ''') 
+nodenumber: {self.nodenumber}
+board:
+{pretty_board}
+depth: {self.depth}
+parent: {parent}
+parent_move: {parent_move}
+best move: {self.best_move}
+best child: {child}
+best score: {self.best_score}
+leaf score: {self.leaf_score}
+    ''') 
 
     @classmethod
     def reset(cls):
@@ -93,6 +95,11 @@ def check_terminal(board,playerview):
     elif lastmove_result == GameState.IS_DRAW: terminal, terminal_score = True, 0
     return terminal, terminal_score
 
+def get_player_piece(playerview):
+    player_piece = Node.agent_piece if playerview == 1 else Node.opponent_piece
+    return player_piece
+
+
 def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView):
     Node.hitcount += 1
 
@@ -106,13 +113,14 @@ def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = f
     best_score = float('-inf')
 
     best_move = None
-    moves = get_valid_moves_bitstring()
+    moves = get_valid_moves(parent_board)
     moves = order_moves(moves)
     current_nodenumber = Node.nodenumber
     first_move = True
     for move in moves:
         child_board = copy.deepcopy(parent_board)
-        apply_move(child_board, move, playerview)
+        player_piece = get_player_piece(playerview)
+        apply_player_action(child_board, move, player_piece)
         Node.nodenumber += 1
         Node(Node.nodenumber, child_board, depth-1, parent=current_nodenumber, parent_move=move)
 
@@ -205,7 +213,10 @@ def apply_move(child_board, move, playerview:PlayerView):
     else: child_board[1].append(move)
     return child_board
 
-def get_valid_moves_bitstring():
-    moves = [0,1]
-    return moves
+def get_valid_moves(board: np.ndarray) -> list[int]:
+    return [0,1]
+    is_open = board[-1, :] == 0
+    possible_moves = np.arange(BOARD_COLS)
+    valid_moves = possible_moves[is_open]
+    return valid_moves
 
