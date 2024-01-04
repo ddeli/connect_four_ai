@@ -66,3 +66,23 @@ def test_iterative_deepening():
 
     iterative_deepening(board, agent_piece=PLAYER1)
 
+def test_check_temrminal():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |             |
+    |             |
+    |             |
+    |             |
+    |  O X O O    |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    print('\n',board)
+
+    Node.agent_piece = PLAYER1
+    Node.opponent_piece = PLAYER2
+    playerview = MaxView
+    terminal, terminal_score = check_terminal(board,playerview)
+    print(f'terminal: {terminal} and terminal_score: {terminal_score}')
