@@ -126,4 +126,16 @@ def test_check_temrminal():
     terminal, terminal_score = check_terminal(board,playerview)
     print(f'terminal: {terminal} and terminal_score: {terminal_score}')
 
+def test_set_players_pieces():
+    agent_piece = PLAYER2
+    set_players_pieces(agent_piece)
+    print('agent_piece:', Node.agent_piece)
+    print('opponent_piece:', Node.opponent_piece)
+
+def test_get_player_piece():
+    agent_piece = PLAYER2
+    set_players_pieces(agent_piece)
+    playerview = -1
+    player_piece = get_player_piece(playerview)
+    print('player piece:', player_piece)
 
