@@ -113,16 +113,15 @@ def test_check_temrminal():
     |             |
     |             |
     |             |
-    |  O X O O    |
+    |  O O O O    |
      - - - - - - -
      0 1 2 3 4 5 6
     '''
     board = string_to_board(board_string)
     print('\n',board)
 
-    Node.agent_piece = PLAYER1
-    Node.opponent_piece = PLAYER2
-    playerview = MaxView
+    set_players_pieces(agent_piece=PLAYER2)
+    playerview = MinView
     terminal, terminal_score = check_terminal(board,playerview)
     print(f'terminal: {terminal} and terminal_score: {terminal_score}')
 
@@ -138,4 +137,7 @@ def test_get_player_piece():
     playerview = -1
     player_piece = get_player_piece(playerview)
     print('player piece:', player_piece)
+
+
+
 
