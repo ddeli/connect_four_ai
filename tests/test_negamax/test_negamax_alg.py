@@ -1,6 +1,7 @@
 import numpy as np
 
 from agents.agent_negamax.negamax import *
+from game_utils_sahand import PLAYER1, PLAYER2
 
 def test_negamax():
     board = np.array([1])
@@ -58,10 +59,10 @@ def test_simplescore():
     print('\nsoce is:',score)
 
 def test_iterative_deepening():
-    board = []
+    board = [[],[]]
     Node.skip_order = False
     Node.skip_null_window = False
     Node.skip_iterative_deepening = False
 
-    iterative_deepening(board)
+    iterative_deepening(board, agent_piece=PLAYER1)
 

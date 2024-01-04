@@ -1,5 +1,7 @@
 import numpy as np
+import copy
 
+from game_utils import *
 from typing import Optional, Callable
 
 PlayerView = np.int8
@@ -10,6 +12,9 @@ MaxDepth = 3
 
 
 class Node():
+    agent_piece = None
+    opponent_piece = None
+
     instances = {}
     nodenumber = 0
     hitcount = -1
@@ -20,7 +25,7 @@ class Node():
     skip_null_window = False
     skip_iterative_deepening = False
 
-    def __init__(self, nodenumber, board=[], depth=None, parent=None, parent_move=None, best_score=None, best_move=None, best_child=None, leaf_score=None):
+    def __init__(self, nodenumber, board, depth=None, parent=None, parent_move=None, best_score=None, best_move=None, best_child=None, leaf_score=None):
         self.nodenumber = nodenumber
         self.board = board
         self.depth = depth
@@ -38,6 +43,7 @@ class Node():
         child = None if self.best_child is None else self.best_child
         print(f'''
             nodenumber: {self.nodenumber}
+            board: {self.board}
             depth: {self.depth}
             parent: {parent}
             parent_move: {parent_move}
@@ -45,8 +51,7 @@ class Node():
             best child: {child}
             best score: {self.best_score}
             leaf score: {self.leaf_score}
-                ''')
-    
+                ''') 
 
     @classmethod
     def reset(cls):
@@ -59,18 +64,30 @@ class Node():
     def print_class(cls):
         for item in cls.instances: cls.instances[item].print_node()
 
-def iterative_deepening(board, maxdepth:int = MaxDepth):
+def iterative_deepening(board, agent_piece:BoardPiece, maxdepth:int = MaxDepth):
+    set_players_pieces(agent_piece)
+    parent_board = copy.deepcopy(board)
     mindepth = maxdepth if Node.skip_iterative_deepening else 1
     for depth in range(mindepth,maxdepth+1):
         print(f'\n***start analysing depth: {depth} ***')
-        Node(Node.nodenumber,board, depth)
-        negamax(board,depth)
+        Node(Node.nodenumber,parent_board, depth)
+        negamax(parent_board, depth, Node.opponent_piece)
         Node.pv = []
         get_pv()
         Node.reset()
 
-def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView):
+def set_players_pieces(agent_piece):
+    Node.agent_piece = agent_piece
+    Node.opponent_piece = PLAYER2 if agent_piece == PLAYER1 else PLAYER1
+
+def switch_piece(previou_player_piece):
+    player_piece = Node.agent_piece if previou_player_piece == Node.opponent_piece else Node.opponent_piece
+    return player_piece
+    
+
+def negamax(parent_board, depth:int, player_piece:BoardPiece, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView):
     Node.hitcount += 1
+    player_piece = switch_piece(player_piece)
     if depth == 0:  
         leaf_score = simplescore(parent_board)*playerview
         Node.instances[Node.nodenumber].leaf_score = leaf_score
@@ -84,19 +101,19 @@ def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = f
     current_nodenumber = Node.nodenumber
     first_move = True
     for move in moves:
-        child_board = parent_board.copy()
-        child_board = apply_move(child_board,move)
+        child_board = copy.deepcopy(parent_board)
+        apply_move(child_board,move,player_piece)
         Node.nodenumber += 1
         Node(Node.nodenumber, child_board, depth-1, parent=current_nodenumber, parent_move=move)
 
         if first_move or Node.skip_null_window:
-            board_score, child_nodenumber = negamax(child_board,depth-1,-beta, -alpha, -playerview)
+            board_score, child_nodenumber = negamax(child_board,depth-1, player_piece, -beta, -alpha, -playerview)
         else:
             mark_nodenumber = Node.nodenumber
-            board_score, child_nodenumber = negamax(child_board,depth-1,-(alpha+1), -alpha, -playerview)
+            board_score, child_nodenumber = negamax(child_board,depth-1, player_piece, -(alpha+1), -alpha, -playerview)
             if alpha < board_score < beta:
                 Node.nodenumber = mark_nodenumber
-                board_score, child_nodenumber = negamax(child_board,depth-1,-beta, -alpha, -playerview)
+                board_score, child_nodenumber = negamax(child_board,depth-1, player_piece, -beta, -alpha, -playerview)
 
         best_score, best_move = update_bestscore_bestmove(board_score, best_score, move, best_move, current_nodenumber, child_nodenumber)
         prune, alpha, beta = check_prune(board_score, alpha, beta)
@@ -173,9 +190,10 @@ def get_parent_move_sequence(nodenumber,parent_sequence):
     parent_sequence.append(parent_move)
     return get_parent_move_sequence(node.parent, parent_sequence)
 
-def apply_move(board,move):
-    board.append(move)
-    return board
+def apply_move(child_board,move,player_piece:BoardPiece):
+    if player_piece == Node.agent_piece: child_board[0].append(move)
+    else: child_board[1].append(move)
+    return child_board
 
 def get_valid_moves_bitstring():
     moves = [0,1]
