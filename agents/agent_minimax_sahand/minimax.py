@@ -2,8 +2,8 @@
 import numpy as np
 
 from game_utils import *
-from agents.agent_minimax.heuristic import *
-from agents.common import *
+from agents.agent_minimax_sahand.heuristic import *
+from agents.common_sahand import *
 from typing import Optional, Callable
 
 DEPTH = 4
