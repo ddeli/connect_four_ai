@@ -1,7 +1,7 @@
 import numpy as np
 
-from game_utils import *
-from agents.common import *
+from game_utils_sahand import *
+from agents.common_sahand import *
 from typing import Optional, Callable
 from typing import List, Tuple
 

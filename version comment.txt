@@ -1,2 +1,8 @@
 a646af13edcf810ff8dd69880d109b2ff7e44c84
     sahand: initiated adding the negamax.py file and other files along with it.
+
+475617a27c200fca5ec04d955089454f7a9797c5:
+    so far, the negamax is completely implementeed with che_terminal in place.
+    it is still working with the dummy functions simple_heuristic(), get_moves(), apply_move().
+    I am creating a branch to connect to gameutils.
+    I will first replace get_valid_moves() and use apply_player_action() from game utils.
