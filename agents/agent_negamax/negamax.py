@@ -66,7 +66,7 @@ leaf score: {self.leaf_score}
     def print_class(cls):
         for item in cls.instances: cls.instances[item].print_node()
 
-def iterative_deepening(board, agent_piece:BoardPiece, maxdepth:int = MaxDepth):
+def iterative_deepening(board, agent_piece:BoardPiece, maxdepth:int = MaxDepth, saved_state = None):
     set_players_pieces(agent_piece)
     parent_board = copy.deepcopy(board)
     mindepth = maxdepth if Node.skip_iterative_deepening else 1
@@ -76,7 +76,10 @@ def iterative_deepening(board, agent_piece:BoardPiece, maxdepth:int = MaxDepth):
         negamax(parent_board, depth)
         Node.pv = []
         get_pv()
+        best_move = Node.pv[0]
+        if depth == maxdepth: return best_move, Node.instances 
         Node.reset()
+
 
 def set_players_pieces(agent_piece):
     Node.agent_piece = agent_piece
