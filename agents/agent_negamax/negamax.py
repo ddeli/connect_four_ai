@@ -9,7 +9,7 @@ PlayerView = np.int8
 MaxView = PlayerView(1)
 MinView = PlayerView(-1)
 
-MaxDepth = 3
+MaxDepth = 4
 
 
 class Node():
@@ -68,6 +68,7 @@ leaf score: {self.leaf_score}
         for item in cls.instances: cls.instances[item].print_node()
 
 def iterative_deepening(board, agent_piece:BoardPiece, maxdepth:int = MaxDepth, saved_state = None):
+    maxdepth = MaxDepth
     set_players_pieces(agent_piece)
     parent_board = copy.deepcopy(board)
     mindepth = maxdepth if Node.skip_iterative_deepening else 1
