@@ -2,6 +2,7 @@ import numpy as np
 import copy
 
 from game_utils_sahand import *
+from agents.agent_minimax_sahand.heuristic import evaluate_board
 from typing import Optional, Callable
 
 PlayerView = np.int8
@@ -109,7 +110,7 @@ def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = f
     terminal, terminal_score = check_terminal(parent_board, playerview)
     if terminal: return -terminal_score
     elif depth == 0:  
-        leaf_score = simplescore(parent_board)*playerview
+        leaf_score = evaluate_board(parent_board,Node.agent_piece)*playerview
         Node.instances[Node.nodenumber].leaf_score = leaf_score
         return -leaf_score, Node.nodenumber
     
@@ -217,9 +218,10 @@ def apply_move(child_board, move, playerview:PlayerView):
     return child_board
 
 def get_valid_moves(board: np.ndarray) -> list[int]:
-    return [0,1]
+    # return [0,1]
     is_open = board[-1, :] == 0
     possible_moves = np.arange(BOARD_COLS)
     valid_moves = possible_moves[is_open]
+    valid_moves = list(valid_moves)
     return valid_moves
 

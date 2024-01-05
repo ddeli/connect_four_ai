@@ -99,8 +99,8 @@ def test_iterative_deepening_numpy_board():
     '''
     board = string_to_board(board_string)
     print('\n',board)
-    Node.skip_order = False
-    Node.skip_null_window = False
+    Node.skip_order = True
+    Node.skip_null_window = True
     Node.skip_iterative_deepening = False
 
     iterative_deepening(board, agent_piece=PLAYER1)
