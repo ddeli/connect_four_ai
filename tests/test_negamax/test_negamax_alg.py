@@ -138,6 +138,26 @@ def test_get_player_piece():
     player_piece = get_player_piece(playerview)
     print('player piece:', player_piece)
 
+def test_all_in_place():
+    board_string = ''' 
+ - - - - - - -
+|             |
+|             |
+|             |
+|  X          |
+|  X       O  |
+|  O   X   O  |
+ - - - - - - -
+ 0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    print('\n',board)
+    Node.skip_order = False
+    Node.skip_null_window = False
+    Node.skip_iterative_deepening = False
+
+    iterative_deepening(board, agent_piece=PLAYER1)
+
 
 
 
