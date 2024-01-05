@@ -1,7 +1,7 @@
 import numpy as np
 import copy
 
-from game_utils_sahand import *
+from game_utils import *
 from agents.agent_minimax_sahand.heuristic import evaluate_board
 from typing import Optional, Callable
 
