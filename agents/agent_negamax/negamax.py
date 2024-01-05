@@ -109,7 +109,7 @@ def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = f
     Node.hitcount += 1
 
     terminal, terminal_score = check_terminal(parent_board, playerview)
-    if terminal: return -terminal_score
+    if terminal: return -terminal_score, Node.nodenumber
     elif depth == 0:  
         leaf_score = evaluate_board(parent_board,Node.agent_piece)*playerview
         Node.instances[Node.nodenumber].leaf_score = leaf_score
