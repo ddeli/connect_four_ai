@@ -76,12 +76,12 @@ def iterative_deepening(board, agent_piece:BoardPiece, maxdepth:int = MaxDepth, 
     parent_board = copy.deepcopy(board)
     mindepth = maxdepth if Node.skip_iterative_deepening else 1
     for depth in range(mindepth,maxdepth+1):
+        Node.reset()
         print(f'\n***start analysing depth: {depth} ***')
         Node(Node.nodenumber,parent_board, depth)
         negamax(parent_board, depth)
         Node.pv = []
         get_pv()
-        Node.reset()
         if depth == maxdepth:
             best_move = Node.pv[0]
             Node.pv = []
