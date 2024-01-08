@@ -138,5 +138,15 @@ def copy_bitstring_array(bitstring_array) -> str:
     bitstring2 = '' + bitstring_array[1]
     return [bitstring1,bitstring2]
 
-# TODO def get_valid_moves_bitstring(bitstring_array) -> int
+
+def get_valid_moves_bitstring(bitstring_array) -> list[int]:
+    bin_player1 = bitstring_array[0]
+    bin_player2 = bitstring_array[1]
+    valid_moves = []
+
+    for i in range(0, 7):
+        if (bin_player1[5 + i * 7] == '0' and bin_player2[5 + i * 7] == '0'):
+            valid_moves.append(i)
+
+    return valid_moves
 

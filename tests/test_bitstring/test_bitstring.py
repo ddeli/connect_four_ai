@@ -1,6 +1,7 @@
 from game_utils import initialize_game_state, PLAYER1, PLAYER2, pretty_print_board
-from bitstring import board_to_bitstring, connected_four_bitstring, apply_player_action_bitstring, calculate_score_bitstring, \
-    bitstring_to_board, check_for_draw_bitstring, check_end_state_bitstring
+from bitstring import board_to_bitstring, connected_four_bitstring, apply_player_action_bitstring, \
+    calculate_score_bitstring, \
+    bitstring_to_board, check_for_draw_bitstring, check_end_state_bitstring, get_valid_moves_bitstring
 
 
 def test_board_to_bitstring():
@@ -268,3 +269,22 @@ def test_check_for_draw_bitstring():
 def test_check_endstate_bitstring():
     binary = ['1111110111111011111101111110111111011111101111110', '1111110111111011111101111110111111011111101111110']
     print(check_end_state_bitstring(binary, PLAYER1))
+
+
+def test_valid_moves_no_moves():
+    binary = ['1111110111111011111101111110111111011111101111110', '1111110111111011111101111110111111011111101111110']
+    valid_moves = get_valid_moves_bitstring(binary)
+    print(valid_moves)
+    assert (valid_moves == [])
+
+def test_valid_moves_0_1_6():
+    binary = ['1111100111110011111101111110111111011111101111100', '1111100111110011111101111110111111011111101111100']
+    valid_moves = get_valid_moves_bitstring(binary)
+    print(valid_moves)
+    assert (valid_moves == [0,1,6])
+
+def test_valid_moves_2_3():
+    binary = ['1111110111111011111001111100111111011111101111100', '1111100111110011111001111100111110011111001111110']
+    valid_moves = get_valid_moves_bitstring(binary)
+    print(valid_moves)
+    assert (valid_moves == [2,3])
