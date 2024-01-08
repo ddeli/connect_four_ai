@@ -12,3 +12,7 @@ a63d72a283e901f203f6190b2750e6fc54be6f17
     reason: the length of the pv[] was less than the length of depth-1 even at root node.
     lots of lines in order_moves() was unncessary.
     improved and corrected.
+
+fdbaa54351e387af742c448bc9f7a37517babc46:
+    I have to reset pv when before returning to main file. because next time the main file apsses
+    the board to the agent, the pv and Node.instances are saved from before.

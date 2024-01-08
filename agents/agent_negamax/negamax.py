@@ -1,7 +1,8 @@
 import numpy as np
 import copy
 
-from game_utils import *
+from game_utils import PLAYER1, PLAYER2, BoardPiece, GameState, BOARD_COLS
+from game_utils import pretty_print_board, check_end_state, apply_player_action
 from agents.agent_minimax_sahand.heuristic import evaluate_board
 from typing import Optional, Callable
 
@@ -80,9 +81,11 @@ def iterative_deepening(board, agent_piece:BoardPiece, maxdepth:int = MaxDepth, 
         negamax(parent_board, depth)
         Node.pv = []
         get_pv()
-        best_move = Node.pv[0]
-        if depth == maxdepth: return best_move, Node.instances 
         Node.reset()
+        if depth == maxdepth:
+            best_move = Node.pv[0]
+            Node.pv = []
+            return best_move, Node.instances 
 
 
 def set_players_pieces(agent_piece):
@@ -177,9 +180,9 @@ def order_moves(moves):
     if Node.principle_move_taken == pv_length: return moves
 
     best_move = Node.pv[Node.principle_move_taken]
-    moves.remove(best_move)
+    moves.remove(best_move) # is it possible for the best_move not to be among the moves anymore?
     moves = [best_move] + moves
-    
+
     Node.principle_move_taken += 1
     return moves
 
