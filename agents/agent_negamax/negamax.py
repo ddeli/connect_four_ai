@@ -12,6 +12,8 @@ MinView = PlayerView(-1)
 MaxDepth = 4
 
 
+
+
 class Node():
     agent_piece = None
     opponent_piece = None
@@ -170,14 +172,14 @@ def get_pv(nodenumber=0):
 
 def order_moves(moves):
     if Node.skip_order: return moves
-    pv_len = len(Node.pv)
-    if Node.principle_move_taken == pv_len: return moves
-    current_depth = Node.instances[Node.nodenumber].depth
-    best_move_pvindex = pv_len - (current_depth-1)
-    if pv_len-1 < best_move_pvindex: return moves
-    best_move = Node.pv[best_move_pvindex]
+
+    pv_length = len(Node.pv)
+    if Node.principle_move_taken == pv_length: return moves
+
+    best_move = Node.pv[Node.principle_move_taken]
     moves.remove(best_move)
     moves = [best_move] + moves
+    
     Node.principle_move_taken += 1
     return moves
 

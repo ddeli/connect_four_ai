@@ -6,3 +6,9 @@ a646af13edcf810ff8dd69880d109b2ff7e44c84
     it is still working with the dummy functions simple_heuristic(), get_moves(), apply_move().
     I am creating a branch to connect to gameutils.
     I will first replace get_valid_moves() and use apply_player_action() from game utils.
+
+a63d72a283e901f203f6190b2750e6fc54be6f17
+    order_moves() was crashing in when agent was winning with next move.
+    reason: the length of the pv[] was less than the length of depth-1 even at root node.
+    lots of lines in order_moves() was unncessary.
+    improved and corrected.

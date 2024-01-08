@@ -1,7 +1,7 @@
 import numpy as np
 
 from agents.agent_negamax.negamax import *
-from game_utils_sahand import PLAYER1, PLAYER2
+from game_utils_sahand import PLAYER1, PLAYER2, string_to_board
 
 def test_negamax():
     board = np.array([1])
@@ -28,13 +28,28 @@ def test_get_pv():
     print(pv)
 
 def test_order_moves():
-    moves = [0,1]
-    pv[:] = [1,1]
+    Node.pv[:] = [1,3]
+    Node.principle_move_taken = 0
 
-    Nodes[0] = Node(0,depth=1)
-    nodenumber[0] = 0
+    moves = [0,1,2,3]
+    print('\navaialbel moves:', moves)
     moves = order_moves(moves)
-    print(f'\nordered move:',moves)
+    print(f'ordered move:',moves)
+
+    moves = [0,1,2,3]
+    print('\navaialbel moves:', moves)
+    moves = order_moves(moves)
+    print(f'ordered move:',moves)
+
+    moves = [0,1,2,3]
+    print('\navaialbel moves:', moves)
+    moves = order_moves(moves)
+    print(f'ordered move:',moves)
+
+    moves = [0,1,2,3]
+    print('\navaialbel moves:', moves)
+    moves = order_moves(moves)
+    print(f'ordered move:',moves)
 
 def test_get_parent_move_sequence():
 
@@ -140,15 +155,15 @@ def test_get_player_piece():
 
 def test_all_in_place():
     board_string = ''' 
- - - - - - - -
-|             |
-|             |
-|             |
-|  X          |
-|  X       O  |
-|  O   X   O  |
- - - - - - - -
- 0 1 2 3 4 5 6
+     - - - - - - - 
+    |             |
+    |             |
+    |             |
+    |             |
+    |             |
+    |    X X X    |
+     - - - - - - -
+     0 1 2 3 4 5 6
     '''
     board = string_to_board(board_string)
     print('\n',board)
