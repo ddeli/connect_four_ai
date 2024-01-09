@@ -1,7 +1,11 @@
 from typing import Callable
+
+from agents.agent_minimax.minimax_bitstring import generate_move_minimax_bitstring
 from game_utils import GenMove
 from agents.agent_human_user import user_move
 from agents.agent_random import generate_move_random
+from agents.agent_minimax import generate_move_minimax
+from agents.agent_negamax import negamax_move
 
 
 def human_vs_agent(
@@ -68,6 +72,8 @@ def human_vs_agent(
 
 
 if __name__ == "__main__":
-    human_vs_agent(user_move)
-    human_vs_agent(generate_move_random)
-
+    # human_vs_agent(user_move)
+    # human_vs_agent(generate_move_random)
+    # human_vs_agent(generate_move_minimax)
+    # human_vs_agent(generate_move_minimax_bitstring)
+    human_vs_agent(negamax_move)

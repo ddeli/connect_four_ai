@@ -1,6 +1,6 @@
 import numpy as np
 
-from game_utils import BoardPiece, PlayerAction, BOARD_COLS, BOARD_ROWS
+from game_utils import BoardPiece, PlayerAction, BOARD_COLS, BOARD_ROWS, GameState
 
 
 def board_to_bitstring(board: np.ndarray) -> str:
@@ -13,7 +13,7 @@ def board_to_bitstring(board: np.ndarray) -> str:
     """
     bitstring_array = ['', '']
 
-    for col in range(6):
+    for col in range(7):
 
         for row in range(6):
             if board[row, col] == 1:
@@ -30,7 +30,7 @@ def board_to_bitstring(board: np.ndarray) -> str:
     return bitstring_array
 
 
-def connect_four_bitstring(binary_str: str, player: BoardPiece) -> bool:
+def connected_four_bitstring(binary_str: str, player: BoardPiece) -> bool:
     """
     Returns True if there are four adjacent pieces equal to `player` arranged
     in either a horizontal, vertical, or diagonal line. Returns False otherwise.
@@ -59,21 +59,21 @@ def connect_four_bitstring(binary_str: str, player: BoardPiece) -> bool:
     return False
 
 
-def make_move_bitstring(binary_array: str, action: PlayerAction, player: BoardPiece) -> str:
+def apply_player_action_bitstring(bitstring_array: str, action: PlayerAction, player: BoardPiece):#-> str:
     if player == 1:
-        binary_player = binary_array[0]
-        binary_opponent = binary_array[1]
+        binary_player = bitstring_array[0]
+        binary_opponent = bitstring_array[1]
     else:
-        binary_player = binary_array[1]
-        binary_opponent = binary_array[0]
+        binary_player = bitstring_array[1]
+        binary_opponent = bitstring_array[0]
     for i in range(0, 6):
-        if binary_player[action*7+5-i] == '0' and binary_opponent[action*7+5-i] == '0':
+        if binary_player[action*7+i] == '0' and binary_opponent[action*7+i] == '0':
             string_list = list(binary_player)
-            string_list[action*7+5-i] = '1'
+            string_list[action*7+i] = '1'
             modified_binary = ''.join(string_list)
-            binary_array[player - 1] = modified_binary
+            bitstring_array[player - 1] = modified_binary
             break
-    return binary_array
+    #return bitstring_array
 
 
 def calculate_score_bitstring(binary_array: str) -> int:
@@ -101,8 +101,52 @@ def bitstring_to_board(binary_array: str, player: BoardPiece) -> np.ndarray:
     for i, line in enumerate(split_array[::-1]):
         for j, char in enumerate(line):
             if char == '1' and player == 1:
-                board[j, 5 - i] = 1
+                board[j, 6 - i] = 1
             if char == '1' and player == 2:
-                board[j, 5 - i] = 2
+                board[j, 6 - i] = 2
 
     return board
+
+
+def check_for_draw_bitstring(binary: str) -> bool:
+    bin_player1 = binary[0]
+    bin_player2 = binary[1]
+
+    for i in range(0, 7):
+        if bin_player1[5+i*7] == '0' or bin_player2[5+i*7] == '0':
+            return False
+    return True
+def check_end_state_bitstring(binary: str, player: BoardPiece) -> GameState:
+    """
+    Returns the current game state for the current `player`, i.e. has their last
+    action won (GameState.IS_WIN) or drawn (GameState.IS_DRAW) the game,
+    or is play still ongoing (GameState.STILL_PLAYING)?
+
+    :param: board: current board state as a nparray
+    :param: player: current player
+    :return: GameState: Evaluation of the GameState after a move
+    """
+    if connected_four_bitstring(binary, player):
+        return GameState.IS_WIN
+    if check_for_draw_bitstring(binary):
+        return GameState.IS_DRAW
+    return GameState.STILL_PLAYING
+
+
+def copy_bitstring_array(bitstring_array) -> str:
+    bitstring1 = '' + bitstring_array[0]
+    bitstring2 = '' + bitstring_array[1]
+    return [bitstring1,bitstring2]
+
+
+def get_valid_moves_bitstring(bitstring_array) -> list[int]:
+    bin_player1 = bitstring_array[0]
+    bin_player2 = bitstring_array[1]
+    valid_moves = []
+
+    for i in range(0, 7):
+        if (bin_player1[5 + i * 7] == '0' and bin_player2[5 + i * 7] == '0'):
+            valid_moves.append(i)
+
+    return valid_moves
+

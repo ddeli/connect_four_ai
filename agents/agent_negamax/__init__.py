@@ -1,0 +1,1 @@
+from .negamax import iterative_deepening as negamax_move

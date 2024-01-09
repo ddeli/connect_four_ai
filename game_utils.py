@@ -236,10 +236,11 @@ def check_end_state(board: np.ndarray, player: BoardPiece) -> GameState:
     :param: player: current player
     :return: GameState: Evaluation of the GameState after a move
     """
-    if np.all(board != NO_PLAYER):
-        return GameState.IS_DRAW
+
     if connected_four(board, player):
         return GameState.IS_WIN
+    if np.all(board != NO_PLAYER):
+        return GameState.IS_DRAW
     return GameState.STILL_PLAYING
 
 
