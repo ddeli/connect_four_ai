@@ -196,6 +196,43 @@ def check_end_state(board: np.ndarray, player: BoardPiece) -> GameState:
     else:
         return(GameState.STILL_PLAYING)
 
+class MoveStatus(Enum):
+    IS_VALID = 1
+    WRONG_TYPE = 'Input is not a number.'
+    NOT_INTEGER = ('Input is not an integer, or isn\'t equal to an integer in '
+                   'value.')
+    OUT_OF_BOUNDS = 'Input is out of bounds.'
+    FULL_COLUMN = 'Selected column is full.'
+
+def check_move_status(board: np.ndarray, column: any) -> MoveStatus:
+    """
+    Returns a MoveStatus indicating whether a move is legal or illegal, and why
+    the move is illegal.
+    Any column type is accepted, but it needs to be convertible to a number
+    and must result in a whole number.
+    Furthermore, the column must be within the bounds of the board and the
+    column must not be full.
+    """
+    try:
+        numeric_column = float(column)
+    except ValueError:
+        return MoveStatus.WRONG_TYPE
+
+    is_integer = np.mod(numeric_column, 1) == 0
+    if not is_integer:
+        return MoveStatus.NOT_INTEGER
+
+    column = PlayerAction(column)
+    is_in_range = PlayerAction(0) <= column <= PlayerAction(6)
+    if not is_in_range:
+        return MoveStatus.OUT_OF_BOUNDS
+
+    is_open = board[-1, column] == NO_PLAYER
+    if not is_open:
+        return MoveStatus.FULL_COLUMN
+
+    return MoveStatus.IS_VALID
+
 # Week 2
 from typing import Callable, Optional
 
