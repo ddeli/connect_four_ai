@@ -1,6 +1,8 @@
 from game_utils_sahand import PLAYER1, PLAYER2, string_to_board, pretty_print_board
 from bitstring import board_to_bitstring, bitstring_to_board
-from agents.agent_negamax.heuristic_bitboard import right_bit_shifts, pair_strings, and_pairs, or_strings, and_strings, check_three_piece, set_player_strings, get_x_connected_str
+from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift
+from agents.agent_negamax.heuristic_bitboard import right_bit_shifts, pair_strings, and_pairs, or_strings, and_strings, \
+                                                    get_three_piece_str, set_player_strings, get_x_connected_str, get_three_piece_one_empty_Str
 
 def test_board_to_bitstring():
     board_string = ''' 
@@ -61,9 +63,9 @@ def test_and_strings():
     print()
     print(bin(anded_string))
 
-def test_check_three_piece():
+def test_get_three_piece_str():
     string = int('001011000000011100000001101',2)
-    ored_string = check_three_piece(string,'col')
+    ored_string = get_three_piece_str(string,'col')
     print()
     print(bin(ored_string))
 
@@ -80,6 +82,31 @@ def test_get_x_connected_str():
     x_connected_string = get_x_connected_str(string, 4, 'col')
     print()
     print(bin(x_connected_string))
+
+def test_get_three_piece_one_empty_Str():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |             |
+    |  X X O X    |
+    |             |
+    |             |
+    |             |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    print('\n',board)
+
+    bit_board = board_to_bitstring(board)
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string = set_player_strings(bit_board,1)
+    three_piece_one_empty_str = get_three_piece_one_empty_Str(agent_string,occupied_string,Row_Shift)
+    print()
+    print(bin(three_piece_one_empty_str))
+
+
 
 
     

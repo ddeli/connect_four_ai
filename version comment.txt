@@ -16,3 +16,9 @@ a63d72a283e901f203f6190b2750e6fc54be6f17
 fdbaa54351e387af742c448bc9f7a37517babc46:
     I have to reset pv when before returning to main file. because next time the main file apsses
     the board to the agent, the pv and Node.instances are saved from before.
+
+23605795bcd9510b02760d99da29d4273ab98f03
+    ongoing work on heuristic.
+    probelms: 1) the virtual row is making problems. if it is all zero, sometimes extended three piece is detected.
+                 if it is all ones, some times prevents three piece detection (in case of row for example)
+              2) XXXO and OXXX are not detected as three pieces.
