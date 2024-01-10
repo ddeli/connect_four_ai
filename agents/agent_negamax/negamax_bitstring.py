@@ -28,9 +28,9 @@ class Node():
     pv = []
     principle_move_taken = 0
 
-    skip_order = False
-    skip_null_window = False
-    skip_iterative_deepening = False
+    skip_order = True
+    skip_null_window = True
+    skip_iterative_deepening = True
 
     def __init__(self, nodenumber, board, depth=None, parent=None, parent_move=None, best_score=None, best_move=None, best_child=None, leaf_score=None):
         self.nodenumber = nodenumber
@@ -73,16 +73,19 @@ leaf score: {self.leaf_score}
     def print_class(cls):
         for item in cls.instances: cls.instances[item].print_node()
 
-def iterative_deepening(board, agent_piece:BoardPiece, maxdepth:int = MaxDepth, saved_state = None):
+
+def iterative_deepening_bitstring(board, agent_piece: BoardPiece, maxdepth:int = MaxDepth, saved_state = None):
     maxdepth = MaxDepth
     set_players_pieces(agent_piece)
-    parent_board = copy.deepcopy(board)
+    parent_board = board_to_bitstring(board)
+    #parent_board = copy.deepcopy(board)
     mindepth = maxdepth if Node.skip_iterative_deepening else 1
-    for depth in range(mindepth,maxdepth+1):
+    for depth in range(mindepth, maxdepth+1):
         Node.reset()
         print(f'\n***start analysing depth: {depth} ***')
-        Node(Node.nodenumber,parent_board, depth)
-        negamax(parent_board, depth)
+        Node(Node.nodenumber, parent_board, depth)
+        fornowbacktoboard = bitstring_to_board(board,agent_piece)
+        negamax(fornowbacktoboard, depth)
         Node.pv = []
         get_pv()
         if depth == maxdepth:
@@ -95,7 +98,7 @@ def set_players_pieces(agent_piece):
     Node.agent_piece = agent_piece
     Node.opponent_piece = PLAYER2 if agent_piece == PLAYER1 else PLAYER1
 
-def check_terminal(board,playerview):
+def check_terminal(board, playerview):
     # note that playerview is one move ahead of the last player.
     # minimizer checks the result for maximizer's last move and vice versa.
     lastpiece = Node.agent_piece if playerview == MinView else Node.opponent_piece
