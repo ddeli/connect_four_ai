@@ -22,3 +22,9 @@ fdbaa54351e387af742c448bc9f7a37517babc46:
     probelms: 1) the virtual row is making problems. if it is all zero, sometimes extended three piece is detected.
                  if it is all ones, some times prevents three piece detection (in case of row for example)
               2) XXXO and OXXX are not detected as three pieces.
+
+1a131a907242e8344411917dca6a8f877e5cb87a
+    The approach to take and between pairs of shifted strings to identify the windows with three pieces didn't work completely fine.
+    the two patterns OXXX and XXXO were missed.
+    also, the virtual row made some mistakes.
+    decided take a new approach on a new branch.
