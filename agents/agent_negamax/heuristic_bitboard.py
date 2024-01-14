@@ -32,18 +32,22 @@ def and_pairs(string_pairs):
     for pair in string_pairs:
         anded_string = pair[0] & pair[1]
         anded_strings.append(anded_string)
+    for string in anded_strings:
+        print_string_alligned(string, 'anded pair')
     return anded_strings
 
 def or_strings(strings):
     ored_string = int('0',2)
     for string in strings:
         ored_string |= string
+    print_string_alligned(ored_string,'ored string')
     return ored_string
 
 def and_strings(strings):
     anded_string = strings[0]
     for string in strings:
         anded_string &= string
+    print_string_alligned(anded_string,'anded string')
     return anded_string
 
 def get_three_piece_str(string, shift_step):
