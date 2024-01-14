@@ -18,14 +18,46 @@ def right_bit_shifts(string, shift_step, shifts):
         print_string_alligned(string,f'shifted {shift_step*shift} to the right')
     return shifted_strings
 
+def OR_strings(strings):
+    ORed_string = int('0',2)
+    for string in strings:
+        ORed_string |= string
+    print_string_alligned(ORed_string,'ored string')
+    return ORed_string
+
+def AND_strings(strings):
+    ANDed_string = strings[0]
+    for string in strings:
+        ANDed_string &= string
+    print_string_alligned(ANDed_string,'anded string')
+    return ANDed_string
+
+def set_player_strings(board, agent_piece):
+    agent_string, opponent_string = (int(board[0],2), int(board[1],2)) if agent_piece == 1 else (int(board[1],2), int(board[0],2))
+    occupied_stirng = agent_string | opponent_string
+    return agent_string, opponent_string, occupied_stirng
+
+def get_x_connected_str(string, x, shift_step):
+    # if shift_step != Row_Shift: string |= int('0000001000000100000010000001000000100000010000001',2)
+    shifted_strings = right_bit_shifts(string,shift_step,x-1)
+    x_connected_string = AND_strings(shifted_strings)
+    return x_connected_string
+
 def print_string_alligned(string,text=None):
     print(format(bin(string)[2:],'>49'),text)
     return
 
-def pair_strings(strings):
-    string_pairs = combinations(strings,2)
-    string_pairs = [pair for pair in string_pairs]
-    return string_pairs
+
+
+
+
+
+
+
+
+
+
+
 
 def and_pairs(string_pairs):
     anded_strings = []
@@ -36,19 +68,10 @@ def and_pairs(string_pairs):
         print_string_alligned(string, 'anded pair')
     return anded_strings
 
-def or_strings(strings):
-    ored_string = int('0',2)
-    for string in strings:
-        ored_string |= string
-    print_string_alligned(ored_string,'ored string')
-    return ored_string
-
-def and_strings(strings):
-    anded_string = strings[0]
-    for string in strings:
-        anded_string &= string
-    print_string_alligned(anded_string,'anded string')
-    return anded_string
+def pair_strings(strings):
+    string_pairs = combinations(strings,2)
+    string_pairs = [pair for pair in string_pairs]
+    return string_pairs
 
 def get_three_piece_str(string, shift_step):
     '''
@@ -59,17 +82,6 @@ def get_three_piece_str(string, shift_step):
     anded_strings = and_pairs(string_pairs)
     three_piece_str = or_strings(anded_strings)
     return three_piece_str
-
-def set_player_strings(board, agent_piece):
-    agent_string, opponent_string = (int(board[0],2), int(board[1],2)) if agent_piece == 1 else (int(board[1],2), int(board[0],2))
-    occupied_stirng = agent_string | opponent_string
-    return agent_string, opponent_string, occupied_stirng
-
-def get_x_connected_str(string, x, shift_step):
-    # if shift_step != Row_Shift: string |= int('0000001000000100000010000001000000100000010000001',2)
-    shifted_strings = right_bit_shifts(string,shift_step,x-1)
-    x_connected_string = and_strings(shifted_strings)
-    return x_connected_string
 
 def get_three_piece_one_empty_Str(string, occupied_string, shift_step):
     '''
