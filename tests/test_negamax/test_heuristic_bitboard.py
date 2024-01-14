@@ -29,11 +29,11 @@ def test_bitstring_to_board():
     print(string_board)
 
 def test_right_bit_shifts():
-    string = int('1111111111',2)
-    shifted_strings = right_bit_shifts(string, 1,10)
-    print()
-    for string in shifted_strings:
-        print(bin(string))
+    string = int('000111100',2)
+    shifted_strings = right_bit_shifts(string, 1,4)
+    # print()
+    # for string in shifted_strings:
+    #     print(bin(string))
 
 def test_pair_strings():
     strings = [int('101',2),int('010',2),int('111',2)]

@@ -13,7 +13,14 @@ def right_bit_shifts(string, shift_step, shifts):
     for shift in range(shifts+1):
         shifted_string = string >> shift_step*shift
         shifted_strings.append(shifted_string)
+    print()
+    for shift,string in enumerate(shifted_strings):
+        print_string_alligned(string,f'shifted {shift_step*shift} to the right')
     return shifted_strings
+
+def print_string_alligned(string,text=None):
+    print(format(bin(string)[2:],'>49'),text)
+    return
 
 def pair_strings(strings):
     string_pairs = combinations(strings,2)
