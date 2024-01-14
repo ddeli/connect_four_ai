@@ -8,6 +8,25 @@ Diagonal_Shift = Shift_Step(8)
 Antidiagoanl_Shift = Shift_Step(6)
 
 
+def count_connected_five(string, occupied_stirng, shift_step):
+    string = string << 49
+    occupied_stirng = occupied_stirng << 49
+    shifted_strings = right_bit_shifts(string, shift_step, 1)
+    ORed_string = OR_strings(shifted_strings)
+    print_string_alligned(ORed_string,'ORed_string')
+
+    five_connected_string = get_x_connected_str(ORed_string,5,shift_step)
+    print_string_alligned(five_connected_string,'five_connected_string')
+
+    # occupied_stirng |= int('0000001000000100000010000001000000100000010000001',2)
+    empty_check_string = get_x_connected_str(occupied_stirng,4,shift_step) >> shift_step
+    print_string_alligned(empty_check_string,'empty_check_string')
+
+    reduced_five_connected = five_connected_string ^ empty_check_string
+    print_string_alligned(reduced_five_connected,'reduced_five_connected')
+
+
+
 def right_bit_shifts(string, shift_step, shifts):
     shifted_strings = []
     for shift in range(shifts+1):
@@ -38,13 +57,12 @@ def set_player_strings(board, agent_piece):
     return agent_string, opponent_string, occupied_stirng
 
 def get_x_connected_str(string, x, shift_step):
-    # if shift_step != Row_Shift: string |= int('0000001000000100000010000001000000100000010000001',2)
     shifted_strings = right_bit_shifts(string,shift_step,x-1)
     x_connected_string = AND_strings(shifted_strings)
     return x_connected_string
 
 def print_string_alligned(string,text=None):
-    print(format(bin(string)[2:],'>49'),text)
+    print(format(bin(string)[2:],'>98'),text)
     return
 
 

@@ -1,8 +1,9 @@
 from game_utils_sahand import PLAYER1, PLAYER2, string_to_board, pretty_print_board
 from bitstring import board_to_bitstring, bitstring_to_board
 from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift
-from agents.agent_negamax.heuristic_bitboard import right_bit_shifts, pair_strings, and_pairs, or_strings, and_strings, \
-                                                    get_three_piece_str, set_player_strings, get_x_connected_str, get_three_piece_one_empty_Str
+from agents.agent_negamax.heuristic_bitboard import right_bit_shifts, pair_strings, and_pairs, OR_strings, AND_strings, \
+                                                    get_three_piece_str, set_player_strings, get_x_connected_str, get_three_piece_one_empty_Str,\
+                                                    count_connected_five
 
 def test_board_to_bitstring():
     board_string = ''' 
@@ -87,7 +88,7 @@ def test_get_three_piece_one_empty_Str():
     board_string = ''' 
      - - - - - - - 
     |             |
-    |             |
+    |            X|
     |            X|
     |             |
     |            X|
@@ -105,6 +106,29 @@ def test_get_three_piece_one_empty_Str():
     three_piece_one_empty_str = get_three_piece_one_empty_Str(agent_string,occupied_string,Col_Shift)
     print()
     print(bin(three_piece_one_empty_str))
+
+def test_count_connected_five():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |             |
+    |             |
+    |             |
+    |             |
+    |O O O X O X X|
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    print('\n',board)
+
+    bit_board = board_to_bitstring(board)
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string = set_player_strings(bit_board,1)
+    count_connected_five(agent_string,occupied_string,Row_Shift)
+
+
 
 
 
