@@ -1,9 +1,38 @@
 from game_utils_sahand import PLAYER1, PLAYER2, string_to_board, pretty_print_board
 from bitstring import board_to_bitstring, bitstring_to_board
 from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift
-from agents.agent_negamax.heuristic_bitboard import right_bit_shifts, pair_strings, and_pairs, OR_strings, AND_strings, \
-                                                    get_three_piece_str, set_player_strings, get_x_connected_str, get_three_piece_one_empty_Str,\
-                                                    count_connected_five
+from agents.agent_negamax.heuristic_bitboard import left_bit_shifts, OR_strings, AND_strings,\
+                                                    get_player_strings, get_x_connected_str, print_string_alligned
+
+
+
+def test_get_player_strings():
+    board_string = ''' 
+     - - - - - - - 
+    |O           X|
+    |O           O|
+    |O           X|
+    |X            |
+    |X            |
+    |X            |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    evaluater_piece, second_string, occupied_string, empty_string  = get_player_strings(bit_board,evaluater_piece = 1)
+    print_string_alligned(evaluater_piece,'evaluater_piece')
+    print_string_alligned(second_string,'second_string')
+    print_string_alligned(occupied_string,'occupied_string')
+    print_string_alligned(empty_string,'empty_string')
+
+def test_left_bit_shifts():
+    string = int('000111100',2)
+    shifted_strings = left_bit_shifts(string, 1,4)
+
 
 def test_board_to_bitstring():
     board_string = ''' 
@@ -69,14 +98,6 @@ def test_get_three_piece_str():
     ored_string = get_three_piece_str(string,'col')
     print()
     print(bin(ored_string))
-
-def test_set_player_strings():
-    board = ['111000','000111']
-    agent_string, opponent_string, occupied_stirng  = set_player_strings(board,2)
-    print()
-    print(bin(agent_string))
-    print(bin(opponent_string))
-    print(bin(occupied_stirng))
 
 def test_get_x_connected_str():
     string = int('000000111100000111100001111',2)
