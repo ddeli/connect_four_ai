@@ -13,9 +13,9 @@ ThreePiece_Score = Window_Score(10)
 def evaluate_boared(board,agent_piece):
     agent_string, opponent_string, _, empty_string = get_player_strings(board, agent_piece)
 
-    print('*** evaluating agent board ***')
+    # print('*** evaluating agent board ***')
     agent_two_piece, agent_three_piece = evaluate_string(agent_string, empty_string)
-    print('*** evaluating opponnent board ***')
+    # print('*** evaluating opponnent board ***')
     opponent_two_piece, opponent_three_piece = evaluate_string(opponent_string,empty_string)
 
     board_score = (agent_two_piece - opponent_two_piece) * TwoPiece_Score \
@@ -41,8 +41,8 @@ def evaluate_string(evaluater_string, empty_string):
             # print(f'*** evaluating pattern {pattern} ***')
             n_three_piece_window += count_pattern(pattern, evaluater_string,empty_string,orientation_shift)
     
-    print(n_two_piece_window,'n_two_piece_window')
-    print(n_three_piece_window,'n_three_piece_window')
+    # print(n_two_piece_window,'n_two_piece_window')
+    # print(n_three_piece_window,'n_three_piece_window')
     
     return n_two_piece_window, n_three_piece_window
 
@@ -68,10 +68,10 @@ def get_player_strings(board, agent_piece):
     all_one_string = (1 << 49) -1
     empty_string = occupied_string ^ all_one_string
 
-    print_string_alligned(agent_string,'agent_string')
-    print_string_alligned(opponent_string,'second_string')
-    print_string_alligned(occupied_string,'occupied_string')
-    print_string_alligned(empty_string,'empty_string')
+    # print_string_alligned(agent_string,'agent_string')
+    # print_string_alligned(opponent_string,'second_string')
+    # print_string_alligned(occupied_string,'occupied_string')
+    # print_string_alligned(empty_string,'empty_string')
     return agent_string, opponent_string, occupied_string, empty_string
 
 def print_string_alligned(string,text=None):
