@@ -8,16 +8,79 @@ Diagonal_Shift = Orentation_Shift(8)
 Antidiagoanl_Shift = Orentation_Shift(6)
 
 
-def count_TFTT(board,evaluater_piece,oreintation_shift):
-    print('*** setting player strings ***')
-    evaluater_string, second_string, occupied_string, empty_string = get_player_strings(board, evaluater_piece)
+def count_pattern(pattern, agent_string, empty_string, oreintation_shift):
+    string = agent_string if pattern[3] == 'T' else empty_string
 
-    print('*** beginning ***')
-    a = get_x_connected_str(evaluater_string, 1, oreintation_shift)
-    print_string_alligned(a,'a')
+    for i in pattern[-2::-1]:
+        if i == 'T':
+            string = (string << oreintation_shift) & agent_string
+        if i == 'F':
+            string = (string << oreintation_shift) & empty_string
+    print_string_alligned(string,'string')
+    count = bin(string).count('1')
+    print(count,'count')
+    return count
+
+def count_FFTT(agent_string, empty_string, oreintation_shift):
+    a = (agent_string << oreintation_shift) & agent_string
     b = (a << oreintation_shift) & empty_string
-    print_string_alligned(b,'b')
-    c = (b << oreintation_shift) & evaluater_string
+    c = (b << oreintation_shift) & empty_string
+    print_string_alligned(c,'c')
+    return c
+
+def count_FTFT(agent_string, empty_string, oreintation_shift):
+    a = (agent_string << oreintation_shift) & empty_string
+    b = (a << oreintation_shift) & agent_string
+    c = (b << oreintation_shift) & empty_string
+    print_string_alligned(c,'c')
+    return c
+
+def count_TFFT(agent_string, empty_string, oreintation_shift):
+    a = (agent_string << oreintation_shift) & empty_string
+    b = (a << oreintation_shift) & empty_string
+    c = (b << oreintation_shift) & agent_string
+    print_string_alligned(c,'c')
+    return c
+
+def count_TFTF(agent_string, empty_string, oreintation_shift):
+    a = (empty_string << oreintation_shift) & agent_string
+    b = (a << oreintation_shift) & empty_string
+    c = (b << oreintation_shift) & agent_string
+    print_string_alligned(c,'c')
+    return c
+
+def count_TTFF(agent_string, empty_string, oreintation_shift):
+    a = (empty_string << oreintation_shift) & empty_string
+    b = (a << oreintation_shift) & agent_string
+    c = (b << oreintation_shift) & agent_string
+    print_string_alligned(c,'c')
+    return c
+
+def count_TTTF(agent_string, empty_string, oreintation_shift):
+    a = (empty_string << oreintation_shift) & agent_string
+    b = (a << oreintation_shift) & agent_string
+    c = (b << oreintation_shift) & agent_string
+    print_string_alligned(c,'c')
+    return c
+
+def count_TTFT(agent_string, empty_string, oreintation_shift):
+    a = (agent_string << oreintation_shift) & empty_string
+    b = (a << oreintation_shift) & agent_string
+    c = (b << oreintation_shift) & agent_string
+    print_string_alligned(c,'c')
+    return c
+
+def count_TFTT(agent_string, empty_string, oreintation_shift):
+    a = (agent_string << oreintation_shift) & agent_string
+    b = (a << oreintation_shift) & empty_string
+    c = (b << oreintation_shift) & agent_string
+    print_string_alligned(c,'c')
+    return c
+
+def count_FTTT(agent_string, empty_string, oreintation_shift):
+    a = (agent_string << oreintation_shift) & agent_string
+    b = (a << oreintation_shift) & agent_string
+    c = (b << oreintation_shift) & empty_string
     print_string_alligned(c,'c')
     return c
 
@@ -60,13 +123,7 @@ def get_a_butnot_b(a,b):
     return a_butnot_b
 
 def get_player_strings(board, agent_piece):
-    '''
-    gets the board representation and returns agent_string, opponent_string, occupied_string, empty_string.
-    opponent_string and occupied_string include the virtual row as well since they are used to check for empty places.
-    we don't want to count the virtual row as empty spaces.
-    '''
     agent_string, opponent_string = (int(board[0],2), int(board[1],2)) if agent_piece == 1 else (int(board[1],2), int(board[0],2))
-    # second_string |= int('0000001000000100000010000001000000100000010000001',2)
 
     occupied_string = agent_string | opponent_string
     occupied_string |= int('0000001000000100000010000001000000100000010000001',2)

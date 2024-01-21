@@ -3,16 +3,118 @@ from bitstring import board_to_bitstring, bitstring_to_board
 from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift
 from agents.agent_negamax.heuristic_bitboard import left_bit_shifts, OR_strings, AND_strings,\
                                                     get_player_strings, get_x_connected_str, print_string_alligned,\
-                                                    evaluate_string, get_a_butnot_b, get_pattern_str, count_TFTT
+                                                    evaluate_string, get_a_butnot_b, get_pattern_str,\
+                                                    count_TFTT, count_TTFT, count_TTTF, count_FTTT,\
+                                                    count_TTFF, count_TFTF, count_TFFT,count_FFTT,\
+                                                    count_pattern
 
-
-def test_count_TFTT():
+def test_count_pattern():
     board_string = ''' 
      - - - - - - - 
+    |  X          |
+    |  X          |
+    |        X    |
+    |  X     X    |
+    |             |
+    |        X    |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_pattern('TFTT',agent_string, empty_string, Col_Shift)
+
+def test_count_FFTT():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |    X        |
+    |    X       X|
+    |            X|
+    |             |
+    |             |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_FFTT(agent_string, empty_string, Col_Shift)
+
+def test_count_TFFT():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |    X        |
+    |            X|
+    |            O|
+    |    X        |
+    |            X|
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_TFFT(agent_string, empty_string, Col_Shift)
+
+def test_count_TFTF():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |             |
+    |    X       O|
+    |            X|
+    |    X        |
+    |            X|
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_TFTF(agent_string, empty_string, Col_Shift)
+
+def test_count_TTFT():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |    X        |
+    |            X|
+    |    X       O|
+    |    X       X|
+    |            X|
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_TTFT(agent_string, empty_string, Col_Shift)
+
+def test_count_TTFF():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |            O|
     |            X|
     |    X       X|
-    |             |
-    |            X|
     |    X        |
     |             |
      - - - - - - -
@@ -23,7 +125,89 @@ def test_count_TFTT():
     print()
     print(bit_board)
 
-    count_TFTT(bit_board,PLAYER1, oreintation_shift=Col_Shift)
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_TTFF(agent_string, empty_string, Col_Shift)
+
+def test_count_TTTF():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |             |
+    |    X       O|
+    |    X       X|
+    |    X       X|
+    |            X|
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_TTTF(agent_string, empty_string, Col_Shift)
+
+def test_count_TTFT():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |    X        |
+    |            X|
+    |    X       O|
+    |    X       X|
+    |            X|
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_TTFT(agent_string, empty_string, Col_Shift)
+
+def test_count_TFTT():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |            X|
+    |          X  |
+    |             |
+    |      X      |
+    |             |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_TFTT(agent_string, empty_string, Diagonal_Shift)
+
+def test_count_FTTT():
+    board_string = ''' 
+     - - - - - - - 
+    |             |
+    |    O        |
+    |    X       X|
+    |    X       X|
+    |    X       X|
+    |            O|
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_FTTT(agent_string, empty_string, Col_Shift)
+
 
 def test_evaluate_strings():
     board_string = ''' 
