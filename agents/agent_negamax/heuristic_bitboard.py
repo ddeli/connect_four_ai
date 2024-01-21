@@ -33,7 +33,7 @@ def left_bit_shifts(string, shift_step, shifts):
         shifted_strings.append(shifted_string)
     print()
     for shift,string in enumerate(shifted_strings):
-        print_string_alligned(string,f'shifted {shift_step*shift} to the right')
+        print_string_alligned(string,f'shifted {shift_step*shift} to the left')
     return shifted_strings
 
 def OR_strings(strings):
