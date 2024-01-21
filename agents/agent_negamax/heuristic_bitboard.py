@@ -7,6 +7,15 @@ Row_Shift = Shift_Step(7)
 Diagonal_Shift = Shift_Step(8)
 Antidiagoanl_Shift = Shift_Step(6)
 
+def get_pattern_str(Ored_string, empty_checker_string,x_connect,shift_step):
+    empty_checked_stirng = get_a_butnot_b(Ored_string, empty_checker_string)
+    print_string_alligned(empty_checked_stirng,'empty_checked_stirng')
+    pattern_string = get_x_connected_str(empty_checked_stirng,x_connect,shift_step)
+    print_string_alligned(pattern_string,'pattern_string')
+    return pattern_string
+
+
+
 def get_a_butnot_b(a,b):
     a_butnot_b = (a ^ b) & a
     return a_butnot_b

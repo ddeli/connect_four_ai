@@ -3,7 +3,12 @@ from bitstring import board_to_bitstring, bitstring_to_board
 from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift
 from agents.agent_negamax.heuristic_bitboard import left_bit_shifts, OR_strings, AND_strings,\
                                                     get_player_strings, get_x_connected_str, print_string_alligned,\
-                                                    evaluate_string, get_a_butnot_b
+                                                    evaluate_string, get_a_butnot_b, get_pattern_str
+
+def test_get_pattern_str():
+    Ored_string = int('0001111000',2)
+    empty_checker_string = int('0100000000',2)
+    get_pattern_str(Ored_string, empty_checker_string, x_connect=4, shift_step=1)
 
 
 def test_evaluate_strings():
@@ -24,6 +29,11 @@ def test_evaluate_strings():
     print(bit_board)
 
     evaluate_string(bit_board,PLAYER1)
+
+def test_get_pattern_str():
+    Ored_string = int('0001111000',2)
+    empty_checker_string = int('0100000000',2)
+    get_pattern_str(Ored_string, empty_checker_string, x_connect=4, shift_step=1)
 
 def test_get_a_butnot_b():
     a = int('11111',2)
