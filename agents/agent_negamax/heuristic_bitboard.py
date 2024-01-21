@@ -51,7 +51,7 @@ def AND_strings(strings):
     return ANDed_string
 
 def get_x_connected_str(string, x, shift_step):
-    shifted_strings = Left_bit_shifts(string,shift_step,x-1)
+    shifted_strings = left_bit_shifts(string,shift_step,x-1)
     x_connected_string = AND_strings(shifted_strings)
     return x_connected_string
 
