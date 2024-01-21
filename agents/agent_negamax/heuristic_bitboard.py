@@ -6,7 +6,45 @@ Col_Shift = Orentation_Shift(1)
 Row_Shift = Orentation_Shift(7)
 Diagonal_Shift = Orentation_Shift(8)
 Antidiagoanl_Shift = Orentation_Shift(6)
+Window_Score = np.int8
+TwoPiece_Score = Window_Score(1)
+ThreePiece_Score = Window_Score(10)
 
+def evaluate_boared(board,agent_piece):
+    agent_string, opponent_string, _, empty_string = get_player_strings(board, agent_piece)
+
+    print('*** evaluating agent board ***')
+    agent_two_piece, agent_three_piece = evaluate_string(agent_string, empty_string)
+    print('*** evaluating opponnent board ***')
+    opponent_two_piece, opponent_three_piece = evaluate_string(opponent_string,empty_string)
+
+    board_score = (agent_two_piece - opponent_two_piece) * TwoPiece_Score \
+                + (agent_three_piece - opponent_three_piece) * ThreePiece_Score
+    print(board_score, 'board score')
+    return board_score
+
+def evaluate_string(evaluater_string, empty_string):
+    two_piece_patterns = ['FFTT','FTFT','FTTF','TFTF','TTFF','TFFT']
+    three_piece_patterns = ['FTTT','TFTT','TTFT','TTTF']
+    orientation_shifts = [Col_Shift,Row_Shift,Diagonal_Shift,Antidiagoanl_Shift]
+    n_two_piece_window = 0
+    n_three_piece_window = 0
+    for orientation_shift in orientation_shifts:
+        # print(f'*** evaluating orientation {orientation_shift} ***')  
+        for pattern in two_piece_patterns:
+            # print(f'*** evaluating pattern {pattern} ***')
+            n_two_piece_window += count_pattern(pattern, evaluater_string,empty_string,orientation_shift) 
+
+    for orientation_shift in orientation_shifts:
+        # print(f'*** evaluating orientation {orientation_shift} ***')  
+        for pattern in three_piece_patterns:
+            # print(f'*** evaluating pattern {pattern} ***')
+            n_three_piece_window += count_pattern(pattern, evaluater_string,empty_string,orientation_shift)
+    
+    print(n_two_piece_window,'n_two_piece_window')
+    print(n_three_piece_window,'n_three_piece_window')
+    
+    return n_two_piece_window, n_three_piece_window
 
 def count_pattern(pattern, evaluater_string, empty_string, oreintation_shift):
     string = evaluater_string if pattern[3] == 'T' else empty_string
@@ -14,11 +52,11 @@ def count_pattern(pattern, evaluater_string, empty_string, oreintation_shift):
     for i in pattern[-2::-1]:
         if i == 'T':
             string = (string << oreintation_shift) & evaluater_string
-        if i == 'F':
+        else:
             string = (string << oreintation_shift) & empty_string
-    print_string_alligned(string,'string')
+    # print_string_alligned(string,'string')
     count = bin(string).count('1')
-    print(count,'count')
+    # print(count,f'counted {pattern} and orientation {oreintation_shift}')
     return count
 
 def get_player_strings(board, agent_piece):
