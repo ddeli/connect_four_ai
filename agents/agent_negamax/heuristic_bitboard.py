@@ -56,5 +56,5 @@ def get_x_connected_str(string, x, shift_step):
     return x_connected_string
 
 def print_string_alligned(string,text=None):
-    print((bin(string)[2:]).zfill(49),text)
+    print(format((bin(string)[2:]).zfill(49),'>59'),text)
     return
