@@ -8,12 +8,12 @@ Diagonal_Shift = Orentation_Shift(8)
 Antidiagoanl_Shift = Orentation_Shift(6)
 
 
-def count_pattern(pattern, agent_string, empty_string, oreintation_shift):
-    string = agent_string if pattern[3] == 'T' else empty_string
+def count_pattern(pattern, evaluater_string, empty_string, oreintation_shift):
+    string = evaluater_string if pattern[3] == 'T' else empty_string
 
     for i in pattern[-2::-1]:
         if i == 'T':
-            string = (string << oreintation_shift) & agent_string
+            string = (string << oreintation_shift) & evaluater_string
         if i == 'F':
             string = (string << oreintation_shift) & empty_string
     print_string_alligned(string,'string')
