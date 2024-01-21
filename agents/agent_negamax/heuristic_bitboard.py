@@ -7,6 +7,20 @@ Row_Shift = Orentation_Shift(7)
 Diagonal_Shift = Orentation_Shift(8)
 Antidiagoanl_Shift = Orentation_Shift(6)
 
+
+def count_TFTT(board,evaluater_piece,oreintation_shift):
+    print('*** setting player strings ***')
+    evaluater_string, second_string, occupied_string, empty_string = get_player_strings(board, evaluater_piece)
+
+    print('*** beginning ***')
+    a = get_x_connected_str(evaluater_string, 1, oreintation_shift)
+    print_string_alligned(a,'a')
+    b = (a << oreintation_shift) & empty_string
+    print_string_alligned(b,'b')
+    c = (b << oreintation_shift) & evaluater_string
+    print_string_alligned(c,'c')
+    return c
+
 def evaluate_string(board, evaluater_piece, oreintation_shift):
     print('*** setting player strings ***')
     evaluater_string, second_string, occupied_string, empty_string = get_player_strings(board, evaluater_piece)

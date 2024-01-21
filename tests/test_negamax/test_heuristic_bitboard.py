@@ -3,7 +3,27 @@ from bitstring import board_to_bitstring, bitstring_to_board
 from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift
 from agents.agent_negamax.heuristic_bitboard import left_bit_shifts, OR_strings, AND_strings,\
                                                     get_player_strings, get_x_connected_str, print_string_alligned,\
-                                                    evaluate_string, get_a_butnot_b, get_pattern_str
+                                                    evaluate_string, get_a_butnot_b, get_pattern_str, count_TFTT
+
+
+def test_count_TFTT():
+    board_string = ''' 
+     - - - - - - - 
+    |            X|
+    |    X       X|
+    |             |
+    |            X|
+    |    X        |
+    |             |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    count_TFTT(bit_board,PLAYER1, oreintation_shift=Col_Shift)
 
 def test_evaluate_strings():
     board_string = ''' 
