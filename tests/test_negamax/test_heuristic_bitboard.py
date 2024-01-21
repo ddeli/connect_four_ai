@@ -5,21 +5,15 @@ from agents.agent_negamax.heuristic_bitboard import left_bit_shifts, OR_strings,
                                                     get_player_strings, get_x_connected_str, print_string_alligned,\
                                                     evaluate_string, get_a_butnot_b, get_pattern_str
 
-def test_get_pattern_str():
-    Ored_string = int('0001111000',2)
-    empty_checker_string = int('0100000000',2)
-    get_pattern_str(Ored_string, empty_checker_string, x_connect=4, shift_step=1)
-
-
 def test_evaluate_strings():
     board_string = ''' 
      - - - - - - - 
     |             |
-    |O            |
-    |X            |
-    |X            |
-    |O            |
-    |X            |
+    |             |
+    |             |
+    |             |
+    |             |
+    |  X   X X O O|
      - - - - - - -
      0 1 2 3 4 5 6
     '''
@@ -28,7 +22,7 @@ def test_evaluate_strings():
     print()
     print(bit_board)
 
-    evaluate_string(bit_board,PLAYER1)
+    evaluate_string(bit_board,PLAYER1, oreintation_shift=Diagonal_Shift)
 
 def test_get_pattern_str():
     Ored_string = int('0001111000',2)
@@ -62,8 +56,8 @@ def test_get_player_strings():
     evaluater_string, second_string, occupied_string, empty_string  = get_player_strings(bit_board,evaluater_piece = PLAYER1)
 
 def test_left_bit_shifts():
-    string = int('000111100',2)
-    shifted_strings = left_bit_shifts(string, 1,4)
+    string = 0b1000000110000010000001100000110000010000001
+    shifted_strings = left_bit_shifts(string, 7,3)
 
 
 def test_board_to_bitstring():

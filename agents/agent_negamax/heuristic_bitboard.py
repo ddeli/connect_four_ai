@@ -1,11 +1,38 @@
 import numpy as np
 from itertools import combinations
 
-Shift_Step = np.int8
-Col_Shift = Shift_Step(1)
-Row_Shift = Shift_Step(7)
-Diagonal_Shift = Shift_Step(8)
-Antidiagoanl_Shift = Shift_Step(6)
+Orentation_Shift = np.int8
+Col_Shift = Orentation_Shift(1)
+Row_Shift = Orentation_Shift(7)
+Diagonal_Shift = Orentation_Shift(8)
+Antidiagoanl_Shift = Orentation_Shift(6)
+
+def evaluate_string(board, evaluater_piece, oreintation_shift):
+    print('*** setting player strings ***')
+    evaluater_string, second_string, occupied_string, empty_string = get_player_strings(board, evaluater_piece)
+
+    # get a list of shifted strings of the evaluater
+    print('*** shifting evaluater strings ***')
+    evaluater_shifted = left_bit_shifts(evaluater_string, shift_step=oreintation_shift, shifts=2)
+
+    # get ORed string of the evaluter shifter once and twice
+    evaluter_shifted1_Ored = OR_strings(evaluater_shifted[:2])
+    evaluter_shifted2_Ored = OR_strings(evaluater_shifted[:3])
+
+    # get a list of shifted strings of the second string
+    print('*** shifting seconder strings ***')
+    seconder_shifted = left_bit_shifts(second_string, shift_step=oreintation_shift, shifts=2)
+    seconder_shifted.append(second_string >> oreintation_shift)
+    for shift,string in enumerate(seconder_shifted):
+        print_string_alligned(string,f'seconder shift element{shift}')
+    
+    # check for connected four in the occupied string
+    print('*** checking connected four in occupied_string ***')
+    occupied_connected_four_str = get_x_connected_str(occupied_string, 4, oreintation_shift)
+
+    # getting TFTT and TTFT strings
+    TFTT_TTFT_str = get_pattern_str(evaluter_shifted1_Ored,occupied_connected_four_str,x_connect=5,shift_step=oreintation_shift)
+    return
 
 def get_pattern_str(Ored_string, empty_checker_string,x_connect,shift_step):
     empty_checked_stirng = get_a_butnot_b(Ored_string, empty_checker_string)
@@ -13,8 +40,6 @@ def get_pattern_str(Ored_string, empty_checker_string,x_connect,shift_step):
     pattern_string = get_x_connected_str(empty_checked_stirng,x_connect,shift_step)
     print_string_alligned(pattern_string,'pattern_string')
     return pattern_string
-
-
 
 def get_a_butnot_b(a,b):
     a_butnot_b = (a ^ b) & a
@@ -46,7 +71,7 @@ def left_bit_shifts(string, shift_step, shifts):
     '''
     shifted_strings = []
     for shift in range(shifts+1):
-        shifted_string = string << shift_step*shift
+        shifted_string = string << int(shift_step*shift)
         shifted_strings.append(shifted_string)
     print()
     for shift,string in enumerate(shifted_strings):
@@ -73,5 +98,5 @@ def get_x_connected_str(string, x, shift_step):
     return x_connected_string
 
 def print_string_alligned(string,text=None):
-    print(format((bin(string)[2:]).zfill(49),'>59'),text)
+    print(format((bin(string)[2:]).zfill(70),'>70'),text)
     return
