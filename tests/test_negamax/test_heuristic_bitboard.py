@@ -1,8 +1,86 @@
 from game_utils_sahand import PLAYER1, PLAYER2, string_to_board, pretty_print_board
 from bitstring import board_to_bitstring, bitstring_to_board
 from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift
-from agents.agent_negamax.heuristic_bitboard import right_bit_shifts, pair_strings, and_pairs, or_strings, and_strings, \
-                                                    get_three_piece_str, set_player_strings, get_x_connected_str, get_three_piece_one_empty_Str
+from agents.agent_negamax.heuristic_bitboard import get_player_strings, print_string_alligned,count_pattern, evaluate_string, evaluate_boared
+
+def test_evaluate_boared():
+    board_string = ''' 
+     - - - - - - - 
+    |O           O|
+    |O         O  |
+    |O           X|
+    |             |
+    |            X|
+    |  O O O     X|
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    evaluate_boared(bit_board, PLAYER1)
+
+
+def test_evaluate_string():
+    board_string = ''' 
+     - - - - - - - 
+    |  X          |
+    |  X          |
+    |  O     X    |
+    |  X X   X    |
+    |             |
+    |        X    |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    evaluate_string(agent_string, empty_string)
+
+def test_count_pattern():
+    board_string = ''' 
+     - - - - - - - 
+    |  X          |
+    |  X          |
+    |        X    |
+    |  X     X    |
+    |             |
+    |        X    |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    agent_string, opponent_string, occupied_string, empty_string = get_player_strings(bit_board, PLAYER1)
+    count_pattern('TFTT',agent_string, empty_string, Col_Shift)
+
+def test_get_player_strings():
+    board_string = ''' 
+     - - - - - - - 
+    |O           X|
+    |O           O|
+    |O           X|
+    |X            |
+    |X            |
+    |X            |
+     - - - - - - -
+     0 1 2 3 4 5 6
+    '''
+    board = string_to_board(board_string)
+    bit_board = board_to_bitstring(board)
+    print()
+    print(bit_board)
+
+    evaluater_string, second_string, occupied_string, empty_string  = get_player_strings(bit_board,evaluater_piece = PLAYER1)
 
 def test_board_to_bitstring():
     board_string = ''' 
@@ -28,83 +106,6 @@ def test_bitstring_to_board():
     string_board = pretty_print_board(board)
     print(string_board)
 
-def test_right_bit_shifts():
-    string = int('000111100',2)
-    shifted_strings = right_bit_shifts(string, 1,4)
-    # print()
-    # for string in shifted_strings:
-    #     print(bin(string))
-
-def test_pair_strings():
-    strings = [int('101',2),int('010',2),int('111',2)]
-    string_pairs = pair_strings(strings)
-    print()
-    for string in string_pairs:
-        print(string)
-
-def test_and_pairs():
-    strings = [int('101',2),int('010',2),int('111',2)]
-    string_pairs = pair_strings(strings)
-    anded_strings = and_pairs(string_pairs)
-    print()
-    for string in anded_strings:
-        print(bin(string))
-
-def test_or_string():
-    strings = [int('111000000',2),int('000111000',2),int('000000111',2)]
-    ored_string = or_strings(strings)
-    print()
-    print(bin(ored_string))
-
-def test_and_strings():
-    # strings = [int('111000000',2),int('000111000',2),int('000000111',2)]
-    strings = [int('111000000',2)]
-    anded_string = and_strings(strings)
-    print()
-    print(bin(anded_string))
-
-def test_get_three_piece_str():
-    string = int('001011000000011100000001101',2)
-    ored_string = get_three_piece_str(string,'col')
-    print()
-    print(bin(ored_string))
-
-def test_set_player_strings():
-    board = ['111000','000111']
-    agent_string, opponent_string, occupied_stirng  = set_player_strings(board,2)
-    print()
-    print(bin(agent_string))
-    print(bin(opponent_string))
-    print(bin(occupied_stirng))
-
-def test_get_x_connected_str():
-    string = int('000000111100000111100001111',2)
-    x_connected_string = get_x_connected_str(string, 4, 'col')
-    print()
-    print(bin(x_connected_string))
-
-def test_get_three_piece_one_empty_Str():
-    board_string = ''' 
-     - - - - - - - 
-    |             |
-    |             |
-    |            X|
-    |             |
-    |            X|
-    |             |
-     - - - - - - -
-     0 1 2 3 4 5 6
-    '''
-    board = string_to_board(board_string)
-    print('\n',board)
-
-    bit_board = board_to_bitstring(board)
-    print(bit_board)
-
-    agent_string, opponent_string, occupied_string = set_player_strings(bit_board,1)
-    three_piece_one_empty_str = get_three_piece_one_empty_Str(agent_string,occupied_string,Col_Shift)
-    print()
-    print(bin(three_piece_one_empty_str))
 
 
 
