@@ -59,25 +59,26 @@ def get_a_butnot_b(a,b):
     a_butnot_b = (a ^ b) & a
     return a_butnot_b
 
-def get_player_strings(board, evaluater_piece):
+def get_player_strings(board, agent_piece):
     '''
     gets the board representation and returns agent_string, opponent_string, occupied_string, empty_string.
     opponent_string and occupied_string include the virtual row as well since they are used to check for empty places.
     we don't want to count the virtual row as empty spaces.
     '''
-    evaluater_string, second_string = (int(board[0],2), int(board[1],2)) if evaluater_piece == 1 else (int(board[1],2), int(board[0],2))
-    second_string |= int('0000001000000100000010000001000000100000010000001',2)
+    agent_string, opponent_string = (int(board[0],2), int(board[1],2)) if agent_piece == 1 else (int(board[1],2), int(board[0],2))
+    # second_string |= int('0000001000000100000010000001000000100000010000001',2)
 
-    occupied_string = evaluater_string | second_string
+    occupied_string = agent_string | opponent_string
+    occupied_string |= int('0000001000000100000010000001000000100000010000001',2)
 
     all_one_string = (1 << 49) -1
     empty_string = occupied_string ^ all_one_string
 
-    print_string_alligned(evaluater_string,'evaluater_string')
-    print_string_alligned(second_string,'second_string')
+    print_string_alligned(agent_string,'agent_string')
+    print_string_alligned(opponent_string,'second_string')
     print_string_alligned(occupied_string,'occupied_string')
     print_string_alligned(empty_string,'empty_string')
-    return evaluater_string, second_string, occupied_string, empty_string
+    return agent_string, opponent_string, occupied_string, empty_string
 
 def left_bit_shifts(string, shift_step, shifts):
     '''
