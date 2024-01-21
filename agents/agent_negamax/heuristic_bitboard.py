@@ -7,6 +7,10 @@ Row_Shift = Shift_Step(7)
 Diagonal_Shift = Shift_Step(8)
 Antidiagoanl_Shift = Shift_Step(6)
 
+def get_a_butnot_b(a,b):
+    a_butnot_b = (a ^ b) & a
+    return a_butnot_b
+
 def get_player_strings(board, evaluater_piece):
     '''
     gets the board representation and returns agent_string, opponent_string, occupied_string, empty_string.
