@@ -1,7 +1,7 @@
 from game_utils_sahand import PLAYER1, PLAYER2, string_to_board, pretty_print_board
 from bitstring import board_to_bitstring, bitstring_to_board
 from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift
-from agents.agent_negamax.heuristic_bitboard import get_player_strings, print_string_alligned,count_pattern, evaluate_string, evaluate_boared
+from agents.agent_negamax.heuristic_bitboard import get_player_strings, print_string_alligned,count_pattern, evaluate_string, evaluate_board
 
 def test_evaluate_boared():
     board_string = ''' 
@@ -20,7 +20,7 @@ def test_evaluate_boared():
     print()
     print(bit_board)
 
-    evaluate_boared(bit_board, PLAYER1)
+    evaluate_board(bit_board, PLAYER1)
 
 
 def test_evaluate_string():

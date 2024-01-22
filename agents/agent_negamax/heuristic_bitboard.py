@@ -24,18 +24,21 @@ def evaluate_board(board,agent_piece):
     return board_score
 
 def evaluate_string(evaluater_string, empty_string):
-    two_piece_patterns = ['FFTT','FTFT','FTTF','TFTF','TTFF','TFFT']
-    three_piece_patterns = ['FTTT','TFTT','TTFT','TTTF']
     orientation_shifts = [Col_Shift,Row_Shift,Diagonal_Shift,Antidiagoanl_Shift]
     n_two_piece_window = 0
     n_three_piece_window = 0
     for orientation_shift in orientation_shifts:
+        if orientation_shift == Col_Shift:
+            two_piece_patterns = ['TTFF']
+            three_piece_patterns = ['TTTF']
+        else:
+            two_piece_patterns = ['FFTT','FTFT','FTTF','TFTF','TTFF','TFFT']
+            three_piece_patterns = ['FTTT','TFTT','TTFT','TTTF']
+
         # print(f'*** evaluating orientation {orientation_shift} ***')  
         for pattern in two_piece_patterns:
             # print(f'*** evaluating pattern {pattern} ***')
             n_two_piece_window += count_pattern(pattern, evaluater_string,empty_string,orientation_shift) 
-
-    for orientation_shift in orientation_shifts:
         # print(f'*** evaluating orientation {orientation_shift} ***')  
         for pattern in three_piece_patterns:
             # print(f'*** evaluating pattern {pattern} ***')
