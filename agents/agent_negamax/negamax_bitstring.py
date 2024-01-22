@@ -3,18 +3,17 @@ import copy
 
 from game_utils import PLAYER1, PLAYER2, BoardPiece, GameState, BOARD_COLS
 from game_utils import pretty_print_board, check_end_state, apply_player_action
-from agents.agent_minimax_sahand.heuristic import evaluate_board
 from typing import Optional, Callable
 from bitstring import board_to_bitstring, apply_player_action_bitstring, \
     calculate_score_bitstring, bitstring_to_board, check_end_state_bitstring, \
     copy_bitstring_array, get_valid_moves_bitstring
+from agents.agent_negamax.heuristic_bitboard import evaluate_board
 
 PlayerView = np.int8
 MaxView = PlayerView(1)
 MinView = PlayerView(-1)
 
-MaxDepth = 4
-
+MaxDepth = 6
 
 class Node():
     agent_piece = None
@@ -26,9 +25,9 @@ class Node():
     pv = []
     principle_move_taken = 0
 
-    skip_order = True
-    skip_null_window = True
-    skip_iterative_deepening = True
+    skip_order = False
+    skip_null_window = False
+    skip_iterative_deepening = False
 
     def __init__(self, nodenumber, board, depth=None, parent=None, parent_move=None, best_score=None, best_move=None, best_child=None, leaf_score=None):
         self.nodenumber = nodenumber
@@ -46,11 +45,10 @@ class Node():
         parent = None if self.parent is None else self.parent
         parent_move = None if self.parent_move is None else self.parent_move
         child = None if self.best_child is None else self.best_child
-        pretty_board = pretty_print_board(self.board)
         print(f'''
 nodenumber: {self.nodenumber}
 board:
-{pretty_board}
+{self.board}
 depth: {self.depth}
 parent: {parent}
 parent_move: {parent_move}
@@ -88,6 +86,7 @@ def iterative_deepening_bitstring(board, agent_piece: BoardPiece, maxdepth:int =
         if depth == maxdepth:
             best_move = Node.pv[0]
             Node.pv = []
+            print(f'best move is *** {best_move} ***')
             return best_move, Node.instances 
 
 
@@ -124,10 +123,7 @@ def negamax(parent_board, depth: int, alpha: float = float('-inf'), beta: float 
     if terminal:
         return -terminal_score, Node.nodenumber
     elif depth == 0:  
-        # TEMP----------------------UNTIL HEURISTIC IS CONVERTED TO BITSTRING
-        # leaf_score = evaluate_board(parent_board, Node.agent_piece)*playerview
-        leaf_score = calculate_score_bitstring(parent_board)*playerview
-        # TEMP----------------------UNTIL HEURISTIC IS CONVERTED TO BITSTRING
+        leaf_score = evaluate_board(parent_board, Node.agent_piece)*playerview
         Node.instances[Node.nodenumber].leaf_score = leaf_score
         return -leaf_score, Node.nodenumber
     
@@ -140,11 +136,11 @@ def negamax(parent_board, depth: int, alpha: float = float('-inf'), beta: float 
     first_move = True
     for move in moves:
         child_board = copy_bitstring_array(parent_board)
+        # child_board = copy.deepcopy(parent_board)
         player_piece = get_player_piece(playerview)
         apply_player_action_bitstring(child_board, move, player_piece)
         Node.nodenumber += 1
-        #TODO Check if playerpiece in bitstring_to_board function below is right
-        Node(Node.nodenumber, bitstring_to_board(child_board, player_piece), depth-1, parent=current_nodenumber, parent_move=move)
+        Node(Node.nodenumber, child_board, depth-1, parent=current_nodenumber, parent_move=move)
 
         if first_move or Node.skip_null_window:
             board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview)
