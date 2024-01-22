@@ -8,9 +8,9 @@ Diagonal_Shift = Orentation_Shift(8)
 Antidiagoanl_Shift = Orentation_Shift(6)
 Window_Score = np.int8
 TwoPiece_Score = Window_Score(1)
-ThreePiece_Score = Window_Score(10)
+ThreePiece_Score = Window_Score(20)
 
-def evaluate_boared(board,agent_piece):
+def evaluate_board(board,agent_piece):
     agent_string, opponent_string, _, empty_string = get_player_strings(board, agent_piece)
 
     # print('*** evaluating agent board ***')
@@ -20,7 +20,7 @@ def evaluate_boared(board,agent_piece):
 
     board_score = (agent_two_piece - opponent_two_piece) * TwoPiece_Score \
                 + (agent_three_piece - opponent_three_piece) * ThreePiece_Score
-    print(board_score, 'board score')
+    # print(board_score, 'board score')
     return board_score
 
 def evaluate_string(evaluater_string, empty_string):
