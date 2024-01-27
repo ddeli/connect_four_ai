@@ -1,2 +1,2 @@
 from .negamax import iterative_deepening as negamax_move
-from .negamax_bitstring import iterative_deepening_bitstring as negamax_move_bitstring
+from .negamax_bitstring_el import iterative_deepening_bitstring as negamax_move_bitstring

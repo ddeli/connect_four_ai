@@ -13,8 +13,7 @@ from bitstring import (
     copy_bitstring_array,
     get_valid_moves_bitstring,
 )
-
-# from agents.agent_negamax.heuristic_bitboard import evaluate_board
+from agents.agent_negamax.heuristic_bitboard_el import evaluate_board
 
 PlayerView = np.int8
 MaxView = PlayerView(1)
@@ -94,7 +93,6 @@ leaf score: {self.leaf_score}
 
 def iterative_deepening_bitstring(
     board,
-    evaluate_board,
     agent_piece: BoardPiece,
     maxdepth: int = MaxDepth,
     saved_state=None,
@@ -143,7 +141,7 @@ def check_terminal(board, playerview):
     # from the minimizer's point of view, maximizer's win is alway -1000.
     # the same is true for maximizer's point of view.
     if lastmove_result == GameState.IS_WIN:
-        terminal, terminal_score = True, -1000
+        terminal, terminal_score = True, float("-inf")
     elif lastmove_result == GameState.IS_DRAW:
         terminal, terminal_score = True, 0
     return terminal, terminal_score
@@ -156,7 +154,6 @@ def get_player_piece(playerview):
 
 def negamax(
     parent_board,
-    evaluate_board,
     depth: int,
     alpha: float = float("-inf"),
     beta: float = float("inf"),
@@ -204,7 +201,6 @@ def negamax(
         if first_move or Node.skip_null_window:
             board_score, child_nodenumber = negamax(
                 child_board,
-                evaluate_board,
                 depth - 1,
                 -beta,
                 -alpha,
@@ -217,7 +213,6 @@ def negamax(
             mark_nodenumber = Node.nodenumber
             board_score, child_nodenumber = negamax(
                 child_board,
-                evaluate_board,
                 depth - 1,
                 -(alpha + 1),
                 -alpha,
@@ -230,7 +225,6 @@ def negamax(
                 Node.nodenumber = mark_nodenumber
                 board_score, child_nodenumber = negamax(
                     child_board,
-                    evaluate_board,
                     depth - 1,
                     -beta,
                     -alpha,

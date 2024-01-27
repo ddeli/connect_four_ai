@@ -1,5 +1,6 @@
 import numpy as np
 from itertools import combinations
+from bitstring import connected_four_bitstring, board_to_bitstring
 
 Orentation_Shift = np.int8
 Col_Shift = Orentation_Shift(1)
@@ -11,18 +12,25 @@ Window_Score = np.int8
 # ThreePiece_Score = Window_Score(20)
 
 
-def evaluate_board_simple_heuristic(
-    board, agent_piece, threepiece_score: np.int8 = 2, twopiece_score: np.int8 = 1
-):
-    # check the output of the original function and here we can use denises code for finding 4 conceced pieces
-    # if conncet_4_our_player: return 1000
-    # else: return -1000
-    return 1
+# def evaluate_board_simple_heuristic(
+#     board, player,
+# ):
+#     board_bitstring=board_to_bitstring(board)
+#     if connected_four_bitstring(board_bitstring, player)==True:
+#         return 1000
+#     else:
+#         if connected_four_bitstring(board_bitstring, 3-player)==True:
+#             return -1000
+#         else: 
+#             return 0
+  
 
 
 def evaluate_board(
     board, agent_piece, threepiece_score: np.int8 = 2, twopiece_score: np.int8 = 1
 ):
+    if threepiece_score==0 and twopiece_score==0:
+        return 0
     agent_string, opponent_string, _, empty_string = get_player_strings(
         board, agent_piece
     )
