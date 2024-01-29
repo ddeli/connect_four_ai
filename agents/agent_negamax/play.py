@@ -1,12 +1,12 @@
 from typing import Callable
 
-from agents.agent_minimax.minimax_bitstring import generate_move_minimax_bitstring
+#from agents.agent_minimax.minimax_bitstring import generate_move_minimax_bitstring
 from game_utils import GenMove
 from agents.agent_human_user import user_move
 # from agents.agent_random import generate_move_random
 # from agents.agent_minimax import generate_move_minimax
 # from agents.agent_negamax import negamax_move
-from agents.agent_negamax.negamax_bitstring_el import negamax_move_bitstring
+from connect_four_ai.agents.agent_negamax.negamax_bitstring import negamax_move_bitstring
 
 
 def agent_vs_agent(
