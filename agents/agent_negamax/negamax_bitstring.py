@@ -1,5 +1,7 @@
 import numpy as np
 import copy
+import sys
+sys.path.append(r'C:\Users\erbli\Desktop\pcp\pcp_group project\connect_four_ai')
 
 from game_utils import PLAYER1, PLAYER2, BoardPiece, GameState, BOARD_COLS
 from game_utils import pretty_print_board, check_end_state, apply_player_action
@@ -13,7 +15,7 @@ from bitstring import (
     copy_bitstring_array,
     get_valid_moves_bitstring,
 )
-from connect_four_ai.agents.agent_negamax.heuristic_bitboard import evaluate_board
+from agents.agent_negamax.heuristic_bitboard import evaluate_board
 
 PlayerView = np.int8
 MaxView = PlayerView(1)
