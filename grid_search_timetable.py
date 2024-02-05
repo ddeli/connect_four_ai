@@ -1,9 +1,10 @@
 from typing import Callable
 from game_utils import GenMove
 import numpy as np
+#from connect_four_ai.grid_search_heuristics import agent_vs_agent
 
 
-def agent_vs_agent(
+def agent_vs_agent_timing(
     generate_move_1: GenMove,
     generate_move_2: GenMove,
     player_1: str = "Player 1",
@@ -29,7 +30,11 @@ def agent_vs_agent(
         gen_args = (args_1, args_2)[::play_first]
 
         playing = True
+        timetable={}
+        timetable[PLAYER1]=[]
+        timetable[PLAYER2]=[]
         while playing:
+            
             for player, player_name, gen_move, args in zip(
                 players, player_names, gen_moves, gen_args,
             ):
@@ -43,13 +48,13 @@ def agent_vs_agent(
                     player, saved_state[player], *args
                 )
                 print(f'Move time: {time.time() - t0:.3f}s')
-
+                timetable[player].append(time.time()-t0)
                 move_status = check_move_status(board, action)
                 if move_status != MoveStatus.IS_VALID:
                     print(f'Move {action} is invalid: {move_status.value}')
                     print(f'{player_name} lost by making an illegal move.')
                     playing = False
-                    return player, 0
+                    return timetable
                     #break
 
                 apply_player_action(board, action, player)
@@ -59,16 +64,16 @@ def agent_vs_agent(
                     print(pretty_print_board(board))
                     if end_state == GameState.IS_DRAW:
                         print('Game ended in draw')
-                        return player, 1
+                        return timetable
                     elif end_state == GameState.IS_WIN:
                         print(
                             f'{player_name} won playing {PLAYER1_PRINT if player == PLAYER1 else PLAYER2_PRINT}'
                         )
                         playing = False
-                        return player, 2
+                        return timetable
                     else: 
                         playing = False
-                        return player, 0
+                        return timetable
 
 
 if __name__ == "__main__":
@@ -76,35 +81,60 @@ if __name__ == "__main__":
     from functools import partial
   
     from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring
-    connected_three_pieces=[2, 8, 0]
-    connected_two_pieces=[1, 1, 0]
- 
-    players=['Player_heuristic_21', 'Player_heuristic_81', 'Player_noheuristic_00'] # heuristic_# means that the three piece score is #
-    game_score={}
-    for i in range(3):
-        game_score[players[i]]=[]
     
-    for i in range(3):
-        iterator=[x for x in range(3) if x != i]
+ 
+    methods=["pv", "ltr", "random", "middle"]    
+    game_score={}
+    k=0
+    game_players={}
+    
+    for i in range(4):
+        iterator=[x for x in range(4) if x != i]
         for j in iterator:
-            partial_agent_move1=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[i], two_piece=connected_two_pieces[i],method='pv')
-            partial_agent_move2=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[j], two_piece=connected_two_pieces[j],method='pv')
-        #(board, PLAYER1,threepiece_score=connected_three_pieces[i], twopiece_score=connected_two_pieces[i])
-        #(board,PLAYER2,threepiece_score=connected_three_pieces[j], twopiece_score=connected_two_pieces[j])
-            output=agent_vs_agent(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
-            if output[0]==1: 
-                game_score[players[i]].append(output[1])
+            game_players[f'game{k}']=[methods[i], methods[j]]
 
-                if output[1]==1:
-                    game_score[players[j]].append(1)
-                else:
-                    game_score[players[j]].append(0)
-            else:
-                game_score[players[j]].append(output[1])
-                if output[1]==1:
-                    game_score[players[i]].append(1)
-                else:
-                    game_score[players[i]].append(0)
+            partial_agent_move1=partial(iterative_deepening_bitstring, method=methods[i])
+            partial_agent_move2=partial(iterative_deepening_bitstring,method=methods[j])
+            output=agent_vs_agent_timing(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
+            game_score[f'game{k}']=output
+            k+=1
+
+    print(game_players)  
+    np.save('connect_four_ai\results\game_players_move_ordering_timetable.npy', game_players)
     print(game_score)
-    np.save('connect_four_ai\results\game_score_heuristics.npy', game_score)
+    np.save('connect_four_ai\results\game_score_move_ordering_timetable.npy', game_score)
+        
+# if __name__ == "__main__":
+ 
+#     from functools import partial
+   
+#     from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring
+    
+#     methods=["pv", "ltr", "random", "middle"]
+#     game_score={}
+#     for i in range(4):
+#         game_score[methods[i]]=[]
+    
+#     for i in range(4):
+#         iterator=[x for x in range(4) if x != i]
+#         for j in iterator:
+#             partial_agent_move1=partial(iterative_deepening_bitstring, method=methods[i])
+#             partial_agent_move2=partial(iterative_deepening_bitstring,method=methods[j])
+       
+#             output=agent_vs_agent(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
+#             if output[0]==1: 
+#                 game_score[methods[i]].append(output[1])
+
+#                 if output[1]==1:
+#                     game_score[methods[j]].append(1)
+#                 else:
+#                     game_score[methods[j]].append(0)
+#             else:
+#                 game_score[methods[j]].append(output[1])
+#                 if output[1]==1:
+#                     game_score[methods[i]].append(1)
+#                 else:
+#                     game_score[methods[i]].append(0)
+#     print(game_score)
+#     np.save('game_score_move_ordering.npy', game_score)
         

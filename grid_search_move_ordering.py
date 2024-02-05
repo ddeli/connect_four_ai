@@ -3,6 +3,8 @@ from game_utils import GenMove
 import numpy as np
 from connect_four_ai.grid_search_heuristics import agent_vs_agent
 
+
+        
 if __name__ == "__main__":
  
     from functools import partial
@@ -35,5 +37,5 @@ if __name__ == "__main__":
                 else:
                     game_score[methods[i]].append(0)
     print(game_score)
-    np.save('game_score_move_ordering.npy', game_score)
+    np.save('connect_four_ai\results\game_score_move_ordering.npy', game_score)
         
