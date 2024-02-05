@@ -30,6 +30,7 @@ plt.ylabel('move time (s)')
 plt.xticks(range(20))
 plt.legend(['principle-of-variation', 'left-to-right', 'random', 'middle'])
 plt.show()
+plt.savefig(r'connect_four_ai\results\Figure_1.png')
 
 
 
