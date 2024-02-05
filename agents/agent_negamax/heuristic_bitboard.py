@@ -8,22 +8,6 @@ Row_Shift = Orentation_Shift(7)
 Diagonal_Shift = Orentation_Shift(8)
 Antidiagoanl_Shift = Orentation_Shift(6)
 Window_Score = np.int8
-# TwoPiece_Score = Window_Score(1)
-# ThreePiece_Score = Window_Score(20)
-
-
-# def evaluate_board_simple_heuristic(
-#     board, player,
-# ):
-#     board_bitstring=board_to_bitstring(board)
-#     if connected_four_bitstring(board_bitstring, player)==True:
-#         return 1000
-#     else:
-#         if connected_four_bitstring(board_bitstring, 3-player)==True:
-#             return -1000
-#         else: 
-#             return 0
-  
 
 
 def evaluate_board(
