@@ -3,17 +3,19 @@ import copy
 
 from game_utils import PLAYER1, PLAYER2, BoardPiece, GameState, BOARD_COLS
 from game_utils import pretty_print_board, check_end_state, apply_player_action
-from agents.agent_minimax_sahand.heuristic import evaluate_board
 from typing import Optional, Callable
+from bitstring import board_to_bitstring, apply_player_action_bitstring, \
+    calculate_score_bitstring, bitstring_to_board, check_end_state_bitstring, \
+    copy_bitstring_array, get_valid_moves_bitstring
+from agents.agent_negamax.heuristic_bitboard import evaluate_board
+
+
 
 PlayerView = np.int8
 MaxView = PlayerView(1)
 MinView = PlayerView(-1)
 
-MaxDepth = 4
-
-
-
+MaxDepth = 6
 
 class Node():
     agent_piece = None
@@ -45,11 +47,10 @@ class Node():
         parent = None if self.parent is None else self.parent
         parent_move = None if self.parent_move is None else self.parent_move
         child = None if self.best_child is None else self.best_child
-        pretty_board = pretty_print_board(self.board)
         print(f'''
 nodenumber: {self.nodenumber}
 board:
-{pretty_board}
+{self.board}
 depth: {self.depth}
 parent: {parent}
 parent_move: {parent_move}
@@ -70,21 +71,23 @@ leaf score: {self.leaf_score}
     def print_class(cls):
         for item in cls.instances: cls.instances[item].print_node()
 
-def iterative_deepening(board, agent_piece:BoardPiece, maxdepth:int = MaxDepth, saved_state = None):
-    maxdepth = MaxDepth
+
+def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state = None, maxdepth:int = MaxDepth, three_piece=2, two_piece=1, method="pv"):
     set_players_pieces(agent_piece)
-    parent_board = copy.deepcopy(board)
+    parent_board = board_to_bitstring(board)
+    # parent_board = copy.deepcopy(board)
     mindepth = maxdepth if Node.skip_iterative_deepening else 1
-    for depth in range(mindepth,maxdepth+1):
+    for depth in range(mindepth, maxdepth+1):
         Node.reset()
-        print(f'\n***start analysing depth: {depth} ***')
-        Node(Node.nodenumber,parent_board, depth)
-        negamax(parent_board, depth)
+        #print(f'\n***start analysing depth: {depth} ***')
+        Node(Node.nodenumber, parent_board, depth)
+        negamax(parent_board, depth, three_piece=three_piece, two_piece=two_piece,method=method)
         Node.pv = []
         get_pv()
         if depth == maxdepth:
             best_move = Node.pv[0]
             Node.pv = []
+            #print(f'best move is *** {best_move} ***')
             return best_move, Node.instances 
 
 
@@ -92,56 +95,62 @@ def set_players_pieces(agent_piece):
     Node.agent_piece = agent_piece
     Node.opponent_piece = PLAYER2 if agent_piece == PLAYER1 else PLAYER1
 
-def check_terminal(board,playerview):
+
+def check_terminal(board, playerview):
     # note that playerview is one move ahead of the last player.
     # minimizer checks the result for maximizer's last move and vice versa.
     lastpiece = Node.agent_piece if playerview == MinView else Node.opponent_piece
     terminal = False
     terminal_score = None
-    lastmove_result = check_end_state(board,lastpiece)
+    lastmove_result = check_end_state_bitstring(board, lastpiece)
     # from the minimizer's point of view, maximizer's win is alway -1000.
     # the same is true for maximizer's point of view.
-    if lastmove_result == GameState.IS_WIN: terminal, terminal_score = True, -1000
-    elif lastmove_result == GameState.IS_DRAW: terminal, terminal_score = True, 0
+    if lastmove_result == GameState.IS_WIN:
+        terminal, terminal_score = True, -1000
+    elif lastmove_result == GameState.IS_DRAW:
+        terminal, terminal_score = True, 0
     return terminal, terminal_score
+
 
 def get_player_piece(playerview):
     player_piece = Node.agent_piece if playerview == 1 else Node.opponent_piece
     return player_piece
 
 
-def negamax(parent_board, depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView):
+def negamax(parent_board, depth: int, alpha: float = float('-inf'), beta: float = float('inf'), playerview: PlayerView = MaxView, three_piece=2, two_piece=1, method="pv"):
     Node.hitcount += 1
 
     terminal, terminal_score = check_terminal(parent_board, playerview)
-    if terminal: return -terminal_score, Node.nodenumber
+    if terminal:
+        return -terminal_score, Node.nodenumber
     elif depth == 0:  
-        leaf_score = evaluate_board(parent_board,Node.agent_piece)*playerview
+        leaf_score = evaluate_board(parent_board, Node.agent_piece, threepiece_score=three_piece, twopiece_score=two_piece)*playerview
         Node.instances[Node.nodenumber].leaf_score = leaf_score
         return -leaf_score, Node.nodenumber
     
     best_score = float('-inf')
 
     best_move = None
-    moves = get_valid_moves(parent_board)
+    moves = get_valid_moves_bitstring(parent_board)
     moves = order_moves(moves)
     current_nodenumber = Node.nodenumber
     first_move = True
     for move in moves:
-        child_board = copy.deepcopy(parent_board)
+        child_board = copy_bitstring_array(parent_board)
+        # child_board = copy.deepcopy(parent_board)
         player_piece = get_player_piece(playerview)
-        apply_player_action(child_board, move, player_piece)
+        apply_player_action_bitstring(child_board, move, player_piece)
         Node.nodenumber += 1
         Node(Node.nodenumber, child_board, depth-1, parent=current_nodenumber, parent_move=move)
 
         if first_move or Node.skip_null_window:
-            board_score, child_nodenumber = negamax(child_board,depth-1, -beta, -alpha, -playerview)
+            board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
         else:
             mark_nodenumber = Node.nodenumber
-            board_score, child_nodenumber = negamax(child_board,depth-1, -(alpha+1), -alpha, -playerview)
+            board_score, child_nodenumber = negamax(child_board, depth-1, -(alpha+1), -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
             if alpha < board_score < beta:
                 Node.nodenumber = mark_nodenumber
-                board_score, child_nodenumber = negamax(child_board,depth-1, -beta, -alpha, -playerview)
+                board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
 
         best_score, best_move = update_bestscore_bestmove(board_score, best_score, move, best_move, current_nodenumber, child_nodenumber)
         prune, alpha, beta = check_prune(board_score, alpha, beta)
@@ -173,61 +182,24 @@ def get_pv(nodenumber=0):
     best_child_nodenumber = node.best_child
     get_pv(best_child_nodenumber)
 
-def order_moves(moves):
+def order_moves(moves, method="pv"):
     if Node.skip_order: return moves
+    if method == "ltr":
+        return moves
+    elif method == "random":
+        return np.random.shuffle(moves)
 
-    pv_length = len(Node.pv)
-    if Node.principle_move_taken == pv_length: return moves
+    elif method == "middle":
+        default_ordering = [3, 2, 4, 1, 5, 0, 6]
+        mask = np.isin(moves, default_ordering)
+        return moves[mask]
+    else:
+        pv_length = len(Node.pv)
+        if Node.principle_move_taken == pv_length: return moves
 
-    best_move = Node.pv[Node.principle_move_taken]
-    moves.remove(best_move) # is it possible for the best_move not to be among the moves anymore?
-    moves = [best_move] + moves
+        best_move = Node.pv[Node.principle_move_taken]
+        moves.remove(best_move) # is it possible for the best_move not to be among the moves anymore?
+        moves = [best_move] + moves
 
-    Node.principle_move_taken += 1
-    return moves
-
-def simplescore(board):
-    leaf_nodenumber = Node.nodenumber
-    parent_sequence = []
-    parent_sequence = get_parent_move_sequence(leaf_nodenumber, parent_sequence)
-
-    if parent_sequence == []: score = 0
-    if parent_sequence == [0]: score = 2
-    if parent_sequence == [1]: score = 4
-    if parent_sequence == [0,0]: score = 90
-    if parent_sequence == [0,1]: score = 40
-    if parent_sequence == [1,0]: score = 80
-    if parent_sequence == [1,1]: score = 60
-    if parent_sequence == [0,0,0]: score = 700
-    if parent_sequence == [0,0,1]: score = 500
-    if parent_sequence == [0,1,0]: score = 300
-    if parent_sequence == [0,1,1]: score = 100
-    if parent_sequence == [1,0,0]: score = 800
-    if parent_sequence == [1,0,1]: score = 600
-    if parent_sequence == [1,1,0]: score = 400
-    if parent_sequence == [1,1,1]: score = 200
-    print(f'leaf node reached; sequence:{parent_sequence}; score:{score}')
-    return score
-
-def get_parent_move_sequence(nodenumber,parent_sequence):
-    node = Node.instances[nodenumber]
-    if node.parent is None: 
-        parent_sequence = parent_sequence[::-1]
-        return parent_sequence
-    parent_move = node.parent_move
-    parent_sequence.append(parent_move)
-    return get_parent_move_sequence(node.parent, parent_sequence)
-
-def apply_move(child_board, move, playerview:PlayerView):
-    if playerview == MaxView: child_board[0].append(move)
-    else: child_board[1].append(move)
-    return child_board
-
-def get_valid_moves(board: np.ndarray) -> list[int]:
-    # return [0,1]
-    is_open = board[-1, :] == 0
-    possible_moves = np.arange(BOARD_COLS)
-    valid_moves = possible_moves[is_open]
-    valid_moves = list(valid_moves)
-    return valid_moves
-
+        Node.principle_move_taken += 1
+        return moves

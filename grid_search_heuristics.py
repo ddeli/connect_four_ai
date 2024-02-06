@@ -1,17 +1,11 @@
 from typing import Callable
-
-from agents.agent_minimax.minimax_bitstring import generate_move_minimax_bitstring
 from game_utils import GenMove
-from agents.agent_human_user import user_move
-from agents.agent_random import generate_move_random
-from agents.agent_minimax import generate_move_minimax
-from agents.agent_negamax import negamax_move
-from agents.agent_negamax import negamax_move_bitstring
+import numpy as np
 
 
-def human_vs_agent(
+def agent_vs_agent(
     generate_move_1: GenMove,
-    generate_move_2: GenMove = user_move,
+    generate_move_2: GenMove,
     player_1: str = "Player 1",
     player_2: str = "Player 2",
     args_1: tuple = (),
@@ -55,7 +49,8 @@ def human_vs_agent(
                     print(f'Move {action} is invalid: {move_status.value}')
                     print(f'{player_name} lost by making an illegal move.')
                     playing = False
-                    break
+                    return player, 0
+                    #break
 
                 apply_player_action(board, action, player)
                 end_state = check_end_state(board, player)
@@ -64,18 +59,52 @@ def human_vs_agent(
                     print(pretty_print_board(board))
                     if end_state == GameState.IS_DRAW:
                         print('Game ended in draw')
-                    else:
+                        return player, 1
+                    elif end_state == GameState.IS_WIN:
                         print(
                             f'{player_name} won playing {PLAYER1_PRINT if player == PLAYER1 else PLAYER2_PRINT}'
                         )
-                    playing = False
-                    break
+                        playing = False
+                        return player, 2
+                    else: 
+                        playing = False
+                        return player, 0
 
 
 if __name__ == "__main__":
-    # human_vs_agent(user_move)
-    # human_vs_agent(generate_move_random)
-    # human_vs_agent(generate_move_minimax)
-    # human_vs_agent(generate_move_minimax_bitstring)
-    # human_vs_agent(negamax_move)
-    human_vs_agent(negamax_move_bitstring)
+   
+    from functools import partial
+  
+    from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring
+    connected_three_pieces=[2, 8, 0]
+    connected_two_pieces=[1, 1, 0]
+ 
+    players=['Player_heuristic_21', 'Player_heuristic_81', 'Player_noheuristic_00'] # heuristic_# means that the three piece score is #
+    game_score={}
+    for i in range(3):
+        game_score[players[i]]=[]
+    
+    for i in range(3):
+        iterator=[x for x in range(3) if x != i]
+        for j in iterator:
+            partial_agent_move1=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[i], two_piece=connected_two_pieces[i],method='pv')
+            partial_agent_move2=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[j], two_piece=connected_two_pieces[j],method='pv')
+        #(board, PLAYER1,threepiece_score=connected_three_pieces[i], twopiece_score=connected_two_pieces[i])
+        #(board,PLAYER2,threepiece_score=connected_three_pieces[j], twopiece_score=connected_two_pieces[j])
+            output=agent_vs_agent(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
+            if output[0]==1: 
+                game_score[players[i]].append(output[1])
+
+                if output[1]==1:
+                    game_score[players[j]].append(1)
+                else:
+                    game_score[players[j]].append(0)
+            else:
+                game_score[players[j]].append(output[1])
+                if output[1]==1:
+                    game_score[players[i]].append(1)
+                else:
+                    game_score[players[i]].append(0)
+    print(game_score)
+    np.save('connect_four_ai\results\game_score_heuristics.npy', game_score)
+        
