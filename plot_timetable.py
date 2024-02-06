@@ -27,7 +27,7 @@ for i in range(len(player_game_timetable['pv'])):
 
 plt.xlabel('agent move #')
 plt.ylabel('move time (s)')
-plt.xticks(range(20))
+plt.xticks(range(0,20,5))
 plt.suptitle('Comparing move time for agent with different move orders')
 plt.legend(['principle-of-variation', 'left-to-right', 'random', 'middle'])
 plt.show()
