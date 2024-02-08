@@ -1,7 +1,34 @@
-from game_utils import PLAYER1, PLAYER2, string_to_board, pretty_print_board
+from game_utils import PLAYER1, PLAYER2, PLAYER1_PRINT, PLAYER2_PRINT, pretty_print_board
 from bitstring import board_to_bitstring, bitstring_to_board
-from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift, TwoPiece_Score, ThreePiece_Score
+from agents.agent_negamax.heuristic_bitboard import Col_Shift, Row_Shift, Diagonal_Shift, Antidiagoanl_Shift
 from agents.agent_negamax.heuristic_bitboard import get_player_strings, print_string_alligned,count_pattern, evaluate_string, evaluate_board
+import numpy as np
+
+def string_to_board(pp_board: str):
+    """
+    Takes the output of pretty_print_board and turns it back into an ndarray.
+    This is quite useful for debugging, when the agent crashed and you have the last
+    board state as a string.
+
+    Parameters
+    ----------
+    pp_board : str
+        The string representation of a game board as produced by pretty_print_board.
+
+    Returns
+    -------
+    board_array: numpy.ndarray
+        A NumPy array representing the game board.
+    """
+
+    board_array_of_string = pp_board.split('|')[1::2]
+    board_array_of_string =np.array([[i for i in row] for row in board_array_of_string])[:,::2]
+
+    board_array = np.zeros(board_array_of_string.shape)
+    board_array[board_array_of_string==PLAYER1_PRINT] = PLAYER1
+    board_array[board_array_of_string==PLAYER2_PRINT] = PLAYER2
+    board_array = board_array[::-1]
+    return board_array
 
 def test_evaluate_boared():
     board_string = ''' 
@@ -20,11 +47,11 @@ def test_evaluate_boared():
     print()
     print(bit_board)
 
-    # for this test to run correctly, make sure the three piece window score is set to 20 and two piece window to 1
-
-    board_score = evaluate_board(bit_board, PLAYER1)
+    threepiece_score = 2
+    twopiece_score = 1
+    board_score = evaluate_board(bit_board, PLAYER1, threepiece_score, twopiece_score)
     print(board_score,'board_score')
-    assert board_score == ((4*20 + 4*1) - (1*20 + 2*1))
+    assert board_score == ((4*threepiece_score + 4*twopiece_score) - (1*threepiece_score + 2*twopiece_score))
 
 
 def test_evaluate_string():
