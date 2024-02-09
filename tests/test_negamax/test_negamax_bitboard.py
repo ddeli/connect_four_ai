@@ -5,6 +5,7 @@ from bitstring import board_to_bitstring
 from agents.agent_negamax.negamax_bitstring_heuristics import Node
 from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring, order_moves, get_pv
 from agents.agent_negamax.negamax_bitstring_heuristics import check_prune, update_bestscore_bestmove, get_player_piece
+from agents.agent_negamax.negamax_bitstring_heuristics import set_players_pieces
 
 def string_to_board(pp_board: str):
     """
@@ -31,6 +32,19 @@ def string_to_board(pp_board: str):
     board_array[board_array_of_string==PLAYER2_PRINT] = PLAYER2
     board_array = board_array[::-1]
     return board_array
+
+def test_set_players_pieces():
+    Node.reset()
+    agent_piece = PLAYER1
+    set_players_pieces(agent_piece)
+    assert Node.agent_piece == PLAYER1
+
+    Node.reset()
+    agent_piece = PLAYER2
+    set_players_pieces(agent_piece)
+    assert Node.agent_piece == PLAYER2
+
+
 
 def test_get_player_piece():
     Node.reset()
