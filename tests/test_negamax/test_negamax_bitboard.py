@@ -3,7 +3,7 @@ import random
 from game_utils import PLAYER1, PLAYER2, PLAYER1_PRINT, PLAYER2_PRINT
 from bitstring import board_to_bitstring
 from agents.agent_negamax.negamax_bitstring_heuristics import Node
-from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring, order_moves
+from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring, order_moves, get_pv
 
 def string_to_board(pp_board: str):
     """
@@ -30,6 +30,18 @@ def string_to_board(pp_board: str):
     board_array[board_array_of_string==PLAYER2_PRINT] = PLAYER2
     board_array = board_array[::-1]
     return board_array
+
+def test_get_pv():
+    desinged_pv = [3,6,2]
+    Node(nodenumber=0, board=[], depth=3, parent=None, parent_move=None, best_move=3, best_child=1)
+    Node(nodenumber=1, board=[], depth=2, parent=0, parent_move=3, best_move=6, best_child=3)
+    Node(nodenumber=3, board=[], depth=1, parent=1, parent_move=6, best_move=2, best_child=9)
+    Node(nodenumber=9, board=[], depth=0, parent=3, parent_move=2, best_move=None, best_child=None)
+
+    get_pv()
+    print(Node.pv)
+
+    assert Node.pv == desinged_pv
 
 
 def test_order_moves_pv():
