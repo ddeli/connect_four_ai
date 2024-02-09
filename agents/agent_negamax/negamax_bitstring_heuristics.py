@@ -175,7 +175,16 @@ def check_prune(board_score:int, alpha:float, beta:float):
     if alpha >= beta: prune = True
     return prune, alpha, beta
 
-def get_pv(nodenumber=0):
+def get_pv(nodenumber:int=0):
+    """
+    Recursively retrieves the principle variation (pv) from a series of recorded nodes. records the principle variation in Node.pv
+
+    Parameters:
+        nodenumber (int): The node number to start retrieving the pv from.
+
+    Returns:
+        None
+    """
     node = Node.instances[nodenumber]
     best_move = node.best_move
     if best_move == None: return
