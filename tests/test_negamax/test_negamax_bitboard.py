@@ -4,7 +4,7 @@ from game_utils import PLAYER1, PLAYER2, PLAYER1_PRINT, PLAYER2_PRINT
 from bitstring import board_to_bitstring
 from agents.agent_negamax.negamax_bitstring_heuristics import Node
 from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring, order_moves, get_pv
-
+from agents.agent_negamax.negamax_bitstring_heuristics import check_prune
 def string_to_board(pp_board: str):
     """
     Takes the output of pretty_print_board and turns it back into an ndarray.
@@ -30,6 +30,14 @@ def string_to_board(pp_board: str):
     board_array[board_array_of_string==PLAYER2_PRINT] = PLAYER2
     board_array = board_array[::-1]
     return board_array
+
+def test_check_prune():
+    board_score = 11
+    alpha = 5
+    beta = 10
+    prune, alpha, beta = check_prune(board_score, alpha, beta)
+
+    assert [prune, alpha, beta] == [True, 11, 10]
 
 def test_get_pv():
     desinged_pv = [3,6,2]
