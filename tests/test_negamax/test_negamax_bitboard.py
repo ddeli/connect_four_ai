@@ -159,6 +159,9 @@ def test_order_moves_pv():
     assert moves_5 == [2, 1, 0, 5, 3]
 
 def test_all_in_place():
+    """
+    this is used for step by step sanity checks and debugging
+    """
     board_string = ''' 
      - - - - - - - 
     |             |
