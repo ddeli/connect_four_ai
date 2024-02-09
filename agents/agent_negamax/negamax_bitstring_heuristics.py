@@ -1,4 +1,5 @@
 import numpy as np
+import random
 import copy
 
 from game_utils import PLAYER1, PLAYER2, BoardPiece, GameState, BOARD_COLS
@@ -182,7 +183,17 @@ def get_pv(nodenumber=0):
     best_child_nodenumber = node.best_child
     get_pv(best_child_nodenumber)
 
-def order_moves(moves, method="pv"):
+def order_moves(moves: list[int], method: str = "pv"):
+    """
+    Orders the moves based on the specified method.
+
+    Parameters:
+    - moves (List[int]): List of moves to be ordered.
+    - method (str, optional): Ordering method. Possible methods are "pv" (principle variation), "ltd"(left to right), "random" and "middle"
+
+    Returns:
+    List[int]: Ordered list of moves.
+    """
     if Node.skip_order: return moves
     if method == "ltr":
         return moves
