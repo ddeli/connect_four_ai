@@ -37,6 +37,7 @@ plt.savefig(r'connect_four_ai\results\Figure_1.png')
 
 plt.suptitle('Move time for agent with different move orders')
 for i in range(len(player_game_timetable['pv'])):
+    
     plt.subplot(2,2,1)
     plt.plot(player_game_timetable['pv'][i], color='red')
     #plt.xlabel('agent move #')
@@ -44,6 +45,7 @@ for i in range(len(player_game_timetable['pv'])):
     plt.xticks(range(0,20,5))
     plt.ylim(0,9)
     plt.legend(['principle-of-variation'], fontsize=8)
+
     plt.subplot(2,2,2)
     plt.plot(player_game_timetable['ltr'][i], color='pink')
     #plt.xlabel('agent move #')
@@ -51,20 +53,23 @@ for i in range(len(player_game_timetable['pv'])):
     plt.xticks(range(0,20,5))
     plt.ylim(0,9)
     plt.legend(['left-to-right'], fontsize=8)
+
     plt.subplot(2,2,3)
-    plt.plot(player_game_timetable['middle'][i], color='skyblue')
+    plt.plot(player_game_timetable['random'][i], color='gray')
     plt.xlabel('agent move #')
     plt.ylabel('move time (s)')
     plt.xticks(range(0,20,5))
     plt.ylim(0,9)
-    plt.legend(['middle'], fontsize=8)
+    plt.legend(['random'], fontsize=8)
+    
     plt.subplot(2,2,4)
-    plt.plot(player_game_timetable['random'][i], color='gray')
+    plt.plot(player_game_timetable['middle'][i], color='skyblue')
     plt.xlabel('agent move #')
     #plt.ylabel('move time (s)')
     plt.xticks(range(0,20,5))
     plt.ylim(0,9)
-    plt.legend(['random'], fontsize=8)
+    plt.legend(['middle'], fontsize=8)
+    
 
 plt.show()
 plt.savefig(r'connect_four_ai\results\Figure_2.png')
