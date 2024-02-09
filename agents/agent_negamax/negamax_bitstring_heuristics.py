@@ -169,7 +169,19 @@ def update_bestscore_bestmove(board_score:int, best_score:int, move:int, best_mo
         Node.instances[current_nodenumber].best_child = child_node_number
     return best_score, best_move
 
-def check_prune(board_score:int, alpha:float, beta:float):
+def check_prune(board_score:int, alpha:float, beta:float) -> tuple[bool, float, float]:
+    """
+    Check if pruning is possible based on the given board score, alpha, and beta.
+
+    Parameters:
+        board_score (int): The score of the current board state.
+        alpha (float): The current alpha value in alpha-beta pruning.
+        beta (float): The current beta value in alpha-beta pruning.
+
+    Returns:
+        Tuple[bool, float, float]: A tuple containing a boolean indicating whether pruning is possible,
+                                   the updated alpha value, and the unchanged beta value.
+    """
     prune = False
     alpha = max(alpha,board_score)
     if alpha >= beta: prune = True
