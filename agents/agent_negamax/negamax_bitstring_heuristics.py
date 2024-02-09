@@ -19,6 +19,9 @@ MinView = PlayerView(-1)
 MaxDepth = 6
 
 class Node():
+    """
+    a class to record attribute of each node in the search tree
+    """
     agent_piece = None
     opponent_piece = None
 
@@ -32,7 +35,21 @@ class Node():
     skip_null_window = False
     skip_iterative_deepening = False
 
-    def __init__(self, nodenumber, board, depth=None, parent=None, parent_move=None, best_score=None, best_move=None, best_child=None, leaf_score=None):
+    def __init__(self, nodenumber:int, board:list[str,str], depth:int=None, parent:int=None, parent_move:int=None, best_score:int=None, best_move:int=None, best_child:int=None, leaf_score:int=None):
+        """
+        Initialize a Node instance.
+
+        Parameters:
+            nodenumber (int): The node number.
+            board (list[str,str]): The game board.
+            depth (Optional[int]): The depth of the node in the search tree.
+            parent (Optional[int]): The parent node nodenumber.
+            parent_move (Optional[int]): The move from the parent node to the current node.
+            best_score (Optional[int]): The best score associated with the node.
+            best_move (Optional[int]): The best move associated with the node.
+            best_child (Optional[int]): The best child node nodenumber.
+            leaf_score (Optional[int]): The score associated with a leaf node.
+        """
         self.nodenumber = nodenumber
         self.board = board
         self.depth = depth
@@ -45,6 +62,9 @@ class Node():
         Node.instances[nodenumber] = self
     
     def print_node(self):
+        """
+        Print information about the node.
+        """
         parent = None if self.parent is None else self.parent
         parent_move = None if self.parent_move is None else self.parent_move
         child = None if self.best_child is None else self.best_child
@@ -63,6 +83,9 @@ leaf score: {self.leaf_score}
 
     @classmethod
     def reset(cls):
+        """
+        Reset class-level variables.
+        """
         cls.instances = {}
         cls.nodenumber = 0
         cls.principle_move_taken = 0
@@ -70,6 +93,9 @@ leaf score: {self.leaf_score}
     
     @classmethod
     def print_class(cls):
+        """
+        Print information about all instances of the class.
+        """
         for item in cls.instances: cls.instances[item].print_node()
 
 
