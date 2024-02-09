@@ -4,7 +4,8 @@ from game_utils import PLAYER1, PLAYER2, PLAYER1_PRINT, PLAYER2_PRINT
 from bitstring import board_to_bitstring
 from agents.agent_negamax.negamax_bitstring_heuristics import Node
 from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring, order_moves, get_pv
-from agents.agent_negamax.negamax_bitstring_heuristics import check_prune
+from agents.agent_negamax.negamax_bitstring_heuristics import check_prune, update_bestscore_bestmove
+
 def string_to_board(pp_board: str):
     """
     Takes the output of pretty_print_board and turns it back into an ndarray.
@@ -31,6 +32,22 @@ def string_to_board(pp_board: str):
     board_array = board_array[::-1]
     return board_array
 
+def test_update_best_move():
+    Node(nodenumber=5,board=[])
+    Node(nodenumber=8,board=[])
+    board_score = 10
+    best_score = 5
+    move = 6
+    best_move = 2
+    current_nodenumber = 5
+    child_node_number = 8
+    best_score, best_move = update_bestscore_bestmove(board_score, best_score, move, best_move, current_nodenumber, child_node_number)
+
+    assert [best_score, best_move] == [10,6]
+    assert Node.instances[5].best_score == 10 
+    assert Node.instances[5].best_move == 6
+    assert Node.instances[5].best_child == 8
+
 def test_check_prune():
     board_score = 11
     alpha = 5
@@ -40,6 +57,7 @@ def test_check_prune():
     assert [prune, alpha, beta] == [True, 11, 10]
 
 def test_get_pv():
+    Node.reset()
     desinged_pv = [3,6,2]
     Node(nodenumber=0, board=[], depth=3, parent=None, parent_move=None, best_move=3, best_child=1)
     Node(nodenumber=1, board=[], depth=2, parent=0, parent_move=3, best_move=6, best_child=3)
@@ -53,6 +71,7 @@ def test_get_pv():
 
 
 def test_order_moves_pv():
+    Node.reset()
     Node.pv[:] = [1,3,4,5]
     Node.principle_move_taken = 0
 
