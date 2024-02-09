@@ -160,7 +160,21 @@ def negamax(parent_board, depth: int, alpha: float = float('-inf'), beta: float 
 
     return -best_score, current_nodenumber
 
-def update_bestscore_bestmove(board_score:int, best_score:int, move:int, best_move, current_nodenumber:int, child_node_number:int)-> tuple[int,int,list]:    
+def update_bestscore_bestmove(board_score:int, best_score:int, move:int, best_move:int, current_nodenumber:int, child_node_number:int)-> tuple[int,int]:
+    """
+    Update the best score and best move based on the given board score, move, and node numbers.
+
+    Parameters:
+        board_score (int): The score of the current board state.
+        best_score (int): The current best score.
+        move (int): The move associated with the current board state.
+        best_move (int): The current best move.
+        current_nodenumber (int): The node number of the current board state.
+        child_node_number (int): The node number of the child board state.
+
+    Returns:
+        Tuple[int, int]: A tuple containing the updated best score and best move.
+    """   
     if board_score > best_score:
         best_score = board_score
         best_move = move
