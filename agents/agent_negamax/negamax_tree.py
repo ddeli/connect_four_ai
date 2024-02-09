@@ -1,3 +1,7 @@
+"""
+This agent uses simple_score() as heuristic. it is only meant to track the perfomrance of the agent via a tree of depth 3 with predetermined node scores.
+"""
+
 import numpy as np
 import random
 import copy
@@ -8,7 +12,7 @@ from typing import Optional, Callable
 from bitstring import board_to_bitstring, apply_player_action_bitstring, check_end_state_bitstring, \
                       calculate_score_bitstring, bitstring_to_board, \
                       copy_bitstring_array, get_valid_moves_bitstring
-from agents.agent_negamax.heuristic_bitboard import evaluate_board
+
 
 
 
@@ -16,7 +20,7 @@ PlayerView = np.int8
 MaxView = PlayerView(1)
 MinView = PlayerView(-1)
 
-MaxDepth = 6
+MaxDepth = 3
 
 class Node():
     """
@@ -210,14 +214,14 @@ def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), 
     if terminal:
         return -terminal_score, Node.nodenumber
     elif depth == 0:  
-        leaf_score = evaluate_board(parent_board, Node.agent_piece, threepiece_score=three_piece, twopiece_score=two_piece)*playerview
+        leaf_score = simplescore()*playerview
         Node.instances[Node.nodenumber].leaf_score = leaf_score
         return -leaf_score, Node.nodenumber
     
     best_score = float('-inf')
 
     best_move = None
-    moves = get_valid_moves_bitstring(parent_board)
+    moves = get_valid_moves_bitstring(parent_board)[:2]
     moves = order_moves(moves, method)
     current_nodenumber = Node.nodenumber
     first_move = True
@@ -339,3 +343,41 @@ def order_moves(moves: list[int], method: str = "pv") -> list[int]:
         else:
             Node.principle_move_taken = pv_length
             return order_moves(moves,'middle')
+
+def simplescore():
+    """
+    this heuristic is only used for tracking the performance of the agent.
+    we define a tree with depth 3 and binary moves and define the score of each node"""
+    leaf_nodenumber = Node.nodenumber
+    parent_sequence = []
+    parent_sequence = get_parent_move_sequence(leaf_nodenumber, parent_sequence)
+
+    if parent_sequence == []: score = 0
+    if parent_sequence == [0]: score = 2
+    if parent_sequence == [1]: score = 4
+    if parent_sequence == [0,0]: score = 90
+    if parent_sequence == [0,1]: score = 40
+    if parent_sequence == [1,0]: score = 80
+    if parent_sequence == [1,1]: score = 60
+    if parent_sequence == [0,0,0]: score = 700
+    if parent_sequence == [0,0,1]: score = 500
+    if parent_sequence == [0,1,0]: score = 300
+    if parent_sequence == [0,1,1]: score = 100
+    if parent_sequence == [1,0,0]: score = 800
+    if parent_sequence == [1,0,1]: score = 600
+    if parent_sequence == [1,1,0]: score = 400
+    if parent_sequence == [1,1,1]: score = 200
+    print(f'leaf node reached; sequence:{parent_sequence}; score:{score}')
+    return score
+
+def get_parent_move_sequence(nodenumber,parent_sequence):
+    """
+    This function helps the simple score function determined which leaf node has been reached
+    """
+    node = Node.instances[nodenumber]
+    if node.parent is None: 
+        parent_sequence = parent_sequence[::-1]
+        return parent_sequence
+    parent_move = node.parent_move
+    parent_sequence.append(parent_move)
+    return get_parent_move_sequence(node.parent, parent_sequence)
