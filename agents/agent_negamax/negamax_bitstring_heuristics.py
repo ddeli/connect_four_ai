@@ -106,7 +106,17 @@ def set_players_pieces(agent_piece:BoardPiece):
     Node.opponent_piece = PLAYER2 if agent_piece == PLAYER1 else PLAYER1
 
 
-def check_terminal(board, playerview):
+def check_terminal(board:list[str,str], playerview:PlayerView) -> tuple[bool,int]:
+    """
+    Check if the current board state is a terminal state and calculate the terminal score.
+
+    Parameters:
+        board (list[str,str]): The game board.
+        playerview (PlayerView): The player's view for whom the terminal check is being performed.
+
+    Returns:
+        Tuple[bool, int]: A tuple containing a boolean indicating whether the state is terminal and the terminal score.
+    """
     # note that playerview is one move ahead of the last player.
     # minimizer checks the result for maximizer's last move and vice versa.
     lastpiece = Node.agent_piece if playerview == MinView else Node.opponent_piece
