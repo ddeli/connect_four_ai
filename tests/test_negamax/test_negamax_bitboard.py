@@ -3,9 +3,9 @@ import random
 from game_utils import PLAYER1, PLAYER2, PLAYER1_PRINT, PLAYER2_PRINT
 from bitstring import board_to_bitstring
 from agents.agent_negamax.negamax_bitstring_heuristics import Node
-from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring, order_moves, get_pv
-from agents.agent_negamax.negamax_bitstring_heuristics import check_prune, update_bestscore_bestmove, get_player_piece
-from agents.agent_negamax.negamax_bitstring_heuristics import set_players_pieces, check_terminal
+from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring, order_moves, get_pv,\
+                                                              check_prune, update_bestscore_bestmove, get_player_piece,\
+                                                              set_players_pieces, check_terminal
 
 def string_to_board(pp_board: str):
     """

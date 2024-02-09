@@ -5,9 +5,9 @@ import copy
 from game_utils import PLAYER1, PLAYER2, BoardPiece, GameState, BOARD_COLS
 from game_utils import pretty_print_board, check_end_state, apply_player_action
 from typing import Optional, Callable
-from bitstring import board_to_bitstring, apply_player_action_bitstring, \
-    calculate_score_bitstring, bitstring_to_board, check_end_state_bitstring, \
-    copy_bitstring_array, get_valid_moves_bitstring
+from bitstring import board_to_bitstring, apply_player_action_bitstring, check_end_state_bitstring, \
+                      calculate_score_bitstring, bitstring_to_board, \
+                      copy_bitstring_array, get_valid_moves_bitstring
 from agents.agent_negamax.heuristic_bitboard import evaluate_board
 
 
@@ -99,7 +99,22 @@ leaf score: {self.leaf_score}
         for item in cls.instances: cls.instances[item].print_node()
 
 
-def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state = None, maxdepth:int = MaxDepth, three_piece=2, two_piece=1, method="pv"):
+def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state = None, maxdepth:int = MaxDepth, three_piece=2, two_piece=1, method="pv") -> tuple[int,dict]:
+    """
+    Perform iterative deepening search to find the best move.
+
+    Parameters:
+        board (List[str,str]): The game board.
+        agent_piece (BoardPiece): The piece for the agent.
+        saved_state (Optional[Any]): Saved state for resuming from a previous search.
+        maxdepth (int): Maximum depth for the search.
+        three_piece (int): Score for a window of length four with three same pieces and one empty space.
+        two_piece (int): Score for a window of length four with two same pieces and two empty spaces.
+        method (str): The ordering method for moves. ("pv": principal variaion, "ltr": left to right, "middle": from middle to side, "random").
+
+    Returns:
+        tuple[int, dict]: A tuple containing the best move and a dictionary containing information about the search.
+    """
     set_players_pieces(agent_piece)
     parent_board = board_to_bitstring(board)
     # parent_board = copy.deepcopy(board)
@@ -118,7 +133,7 @@ def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state =
             return best_move, Node.instances 
 
 
-def set_players_pieces(agent_piece:BoardPiece):
+def set_players_pieces(agent_piece:BoardPiece) -> None:
     """
     Set the agent's and opponent's pieces in the class based on the given agent's piece.
 
@@ -172,7 +187,23 @@ def get_player_piece(playerview:PlayerView)->BoardPiece:
     return player_piece
 
 
-def negamax(parent_board, depth: int, alpha: float = float('-inf'), beta: float = float('inf'), playerview: PlayerView = MaxView, three_piece=2, two_piece=1, method="pv"):
+def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView, three_piece:int=2, two_piece:int=1, method:str="pv") -> tuple[float, int]:
+    """
+    Perform negamax and null winodw search to find the best move.
+
+    Parameters:
+        parent_board (list[str, str]]): The game board.
+        depth (int): The depth of the search.
+        alpha (float): Alpha value for alpha-beta pruning.
+        beta (float): Beta value for alpha-beta pruning.
+        playerview (PlayerView): The player's view (maximizer or minimizer).
+        three_piece (int): Score for a window of length four with three same pieces and one empty space.
+        two_piece (int): Score for a window of length four with two same pieces and two empty spaces.
+        method (str): The ordering method for moves ("pv": principal variaion, "ltr": left to right, "middle": from middle to side, "random").
+
+    Returns:
+        Tuple[int, int]: A tuple containing the best score and the corresponding best move.
+    """
     Node.hitcount += 1
 
     terminal, terminal_score = check_terminal(parent_board, playerview)
@@ -255,7 +286,7 @@ def check_prune(board_score:int, alpha:float, beta:float) -> tuple[bool, float, 
     if alpha >= beta: prune = True
     return prune, alpha, beta
 
-def get_pv(nodenumber:int=0):
+def get_pv(nodenumber:int=0) -> None:
     """
     Recursively retrieves the principle variation (pv) from a series of recorded nodes. records the principle variation in Node.pv
 
@@ -272,7 +303,7 @@ def get_pv(nodenumber:int=0):
     best_child_nodenumber = node.best_child
     get_pv(best_child_nodenumber)
 
-def order_moves(moves: list[int], method: str = "pv"):
+def order_moves(moves: list[int], method: str = "pv") -> list[int]:
     """
     Orders the moves based on the specified method.
 
