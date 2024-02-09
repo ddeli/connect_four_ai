@@ -132,7 +132,7 @@ def negamax(parent_board, depth: int, alpha: float = float('-inf'), beta: float 
 
     best_move = None
     moves = get_valid_moves_bitstring(parent_board)
-    moves = order_moves(moves)
+    moves = order_moves(moves, method)
     current_nodenumber = Node.nodenumber
     first_move = True
     for move in moves:
@@ -187,19 +187,24 @@ def order_moves(moves, method="pv"):
     if method == "ltr":
         return moves
     elif method == "random":
-        return np.random.shuffle(moves)
+        random.shuffle(moves)
+        return moves
 
     elif method == "middle":
         default_ordering = [3, 2, 4, 1, 5, 0, 6]
-        mask = np.isin(moves, default_ordering)
-        return moves[mask]
+        moves = [move for move in default_ordering if move in moves]
+        return moves
     else:
         pv_length = len(Node.pv)
-        if Node.principle_move_taken == pv_length: return moves
+        if Node.principle_move_taken == pv_length:  return order_moves(moves,'middle')
 
         best_move = Node.pv[Node.principle_move_taken]
-        moves.remove(best_move) # is it possible for the best_move not to be among the moves anymore?
-        moves = [best_move] + moves
+        if best_move in moves:
+            moves.remove(best_move) 
+            moves = [best_move] + moves
 
-        Node.principle_move_taken += 1
-        return moves
+            Node.principle_move_taken += 1
+            return moves
+        else:
+            Node.principle_move_taken = pv_length
+            return order_moves(moves,'middle')
