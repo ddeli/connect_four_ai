@@ -113,7 +113,16 @@ def check_terminal(board, playerview):
     return terminal, terminal_score
 
 
-def get_player_piece(playerview):
+def get_player_piece(playerview:PlayerView)->BoardPiece:
+    """
+    Get the player's piece based on the given player view.
+
+    Parameters:
+        playerview (PlayerView): The player's view (1 for agent, 2 for opponent).
+
+    Returns:
+        playerpiece (BoardPiece): The piece associated with the player (agent or opponent).
+    """
     player_piece = Node.agent_piece if playerview == 1 else Node.opponent_piece
     return player_piece
 
