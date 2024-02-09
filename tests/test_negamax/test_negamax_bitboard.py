@@ -4,7 +4,7 @@ from game_utils import PLAYER1, PLAYER2, PLAYER1_PRINT, PLAYER2_PRINT
 from bitstring import board_to_bitstring
 from agents.agent_negamax.negamax_bitstring_heuristics import Node
 from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring, order_moves, get_pv
-from agents.agent_negamax.negamax_bitstring_heuristics import check_prune, update_bestscore_bestmove
+from agents.agent_negamax.negamax_bitstring_heuristics import check_prune, update_bestscore_bestmove, get_player_piece
 
 def string_to_board(pp_board: str):
     """
@@ -31,6 +31,16 @@ def string_to_board(pp_board: str):
     board_array[board_array_of_string==PLAYER2_PRINT] = PLAYER2
     board_array = board_array[::-1]
     return board_array
+
+def test_get_player_piece():
+    Node.reset()
+    Node.agent_piece = PLAYER1
+    Node.opponent_piece = PLAYER2
+    player_piece1 = get_player_piece(playerview=1)
+    player_piece2 = get_player_piece(playerview=-1)
+
+    assert player_piece1 == PLAYER1
+    assert player_piece2 == PLAYER2
 
 def test_update_best_move():
     Node(nodenumber=5,board=[])
