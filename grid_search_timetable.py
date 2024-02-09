@@ -91,6 +91,7 @@ if __name__ == "__main__":
     for i in range(4):
         iterator=[x for x in range(4) if x != i]
         for j in iterator:
+            print(f'game_{k} = {methods[i], methods[j]}')
             game_players[f'game{k}']=[methods[i], methods[j]]
 
             partial_agent_move1=partial(iterative_deepening_bitstring, method=methods[i])
@@ -98,11 +99,11 @@ if __name__ == "__main__":
             output=agent_vs_agent_timing(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
             game_score[f'game{k}']=output
             k+=1
-
+        print(f'game_{k} = {methods[i], methods[j]}')
     print(game_players)  
-    np.save('connect_four_ai\results\game_players_move_ordering_timetable.npy', game_players)
+    np.save(r'connect_four_ai\results\game_players_move_ordering_timetable.npy', game_players)
     print(game_score)
-    np.save('connect_four_ai\results\game_score_move_ordering_timetable.npy', game_score)
+    np.save(r'connect_four_ai\results\game_score_move_ordering_timetable.npy', game_score)
         
 # if __name__ == "__main__":
  

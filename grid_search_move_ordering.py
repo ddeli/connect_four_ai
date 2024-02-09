@@ -37,5 +37,5 @@ if __name__ == "__main__":
                 else:
                     game_score[methods[i]].append(0)
     print(game_score)
-    np.save('connect_four_ai\results\game_score_move_ordering.npy', game_score)
+    np.save(r'connect_four_ai\results\game_score_move_ordering.npy', game_score)
         
