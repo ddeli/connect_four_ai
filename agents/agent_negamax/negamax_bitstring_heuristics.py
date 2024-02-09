@@ -92,7 +92,16 @@ def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state =
             return best_move, Node.instances 
 
 
-def set_players_pieces(agent_piece):
+def set_players_pieces(agent_piece:BoardPiece):
+    """
+    Set the agent's and opponent's pieces in the class based on the given agent's piece.
+
+    Parameters:
+        agent_piece (BoardPiece): The piece for the agent.
+
+    Returns:
+        None
+    """
     Node.agent_piece = agent_piece
     Node.opponent_piece = PLAYER2 if agent_piece == PLAYER1 else PLAYER1
 
