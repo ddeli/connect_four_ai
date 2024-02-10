@@ -266,6 +266,14 @@ def test_check_for_draw_bitstring():
     assert (draw == True)
 
 
+def test_check_for_draw_bitstring2():
+    binary = ['0010100000110001010101101110101010000101100101010', '1101010111001010101000010000010101011010001010100']
+    print(pretty_print_board(bitstring_to_board(binary, 1) + bitstring_to_board(binary, 2)))
+    draw = check_for_draw_bitstring(binary)
+
+    assert (draw == True)
+
+
 def test_check_endstate_bitstring():
     binary = ['1111110111111011111101111110111111011111101111110', '1111110111111011111101111110111111011111101111110']
     print(check_end_state_bitstring(binary, PLAYER1))

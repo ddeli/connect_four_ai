@@ -113,7 +113,7 @@ def check_for_draw_bitstring(binary: str) -> bool:
     bin_player2 = binary[1]
 
     for i in range(0, 7):
-        if bin_player1[5+i*7] == '0' or bin_player2[5+i*7] == '0':
+        if bin_player1[5+i*7] == '0' and bin_player2[5+i*7] == '0':
             return False
     return True
 def check_end_state_bitstring(binary: str, player: BoardPiece) -> GameState:
