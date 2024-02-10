@@ -171,7 +171,7 @@ def test_all_in_place():
     |             |
     |             |
     |      O      |
-    |      X X    |
+    |    O X X    |
      - - - - - - -
      0 1 2 3 4 5 6
     '''
@@ -181,11 +181,11 @@ def test_all_in_place():
     print(bit_board)
 
     Node.skip_order = False
-    Node.skip_null_window = True
-    Node.skip_iterative_deepening = True
+    Node.skip_null_window = False
+    Node.skip_iterative_deepening = False
 
     max_depth = 7
-    agent_piece = PLAYER2
+    agent_piece = PLAYER1
     start_time = time.time()
     best_move, Node.instances = iterative_deepening_bitstring(board, agent_piece,maxdepth=max_depth)
     end_time = time.time()
@@ -198,4 +198,3 @@ def test_all_in_place():
     print(f'Nodenumber is {Node.nodenumber}')
     print(f'Nodes visited are {Node.hitcount}')
     print(f'max depth is {max_depth}')
-    print(f'principle variation: {Node.pv}')
