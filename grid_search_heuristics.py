@@ -89,8 +89,7 @@ if __name__ == "__main__":
         for j in iterator:
             partial_agent_move1=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[i], two_piece=connected_two_pieces[i],method='pv')
             partial_agent_move2=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[j], two_piece=connected_two_pieces[j],method='pv')
-        #(board, PLAYER1,threepiece_score=connected_three_pieces[i], twopiece_score=connected_two_pieces[i])
-        #(board,PLAYER2,threepiece_score=connected_three_pieces[j], twopiece_score=connected_two_pieces[j])
+       
             output=agent_vs_agent(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
             if output[0]==1: 
                 game_score[players[i]].append(output[1])
@@ -106,5 +105,5 @@ if __name__ == "__main__":
                 else:
                     game_score[players[i]].append(0)
     print(game_score)
-    np.save('connect_four_ai\results\game_score_heuristics.npy', game_score)
+    np.save(r'connect_four_ai\results\game_score_heuristics.npy', game_score)
         

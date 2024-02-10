@@ -100,9 +100,9 @@ if __name__ == "__main__":
             k+=1
 
     print(game_players)  
-    np.save('connect_four_ai\results\game_players_move_ordering_timetable.npy', game_players)
+    np.save(r'connect_four_ai\results\game_players_move_ordering_timetable.npy', game_players)
     print(game_score)
-    np.save('connect_four_ai\results\game_score_move_ordering_timetable.npy', game_score)
+    np.save(r'connect_four_ai\results\game_score_move_ordering_timetable.npy', game_score)
         
 # if __name__ == "__main__":
  
