@@ -39,14 +39,15 @@ def test_all_in_place():
     this is used for step by step sanity checks and debugging.
     also for timing the agent in different scenarios and for different inputs.
     """
+
     board_string = ''' 
      - - - - - - - 
-    |O O X X O X X|
-    |X X O X X X O|
-    |O X X X O O X|
-    |X O O O X X O|
-    |O O X X O O X|
-    |O O O X X O O|
+    |  O   O      |
+    |  X   X X    |
+    |  O   O X    |
+    |  X   X O    |
+    |  X   O X X  |
+    |  O   X O O  |
      - - - - - - -
      0 1 2 3 4 5 6
     '''
@@ -63,10 +64,11 @@ def test_all_in_place():
     Node.skip_null_window = False
     Node.skip_iterative_deepening = False
 
-    max_depth = 2
+    max_depth = 6
     agent_piece = PLAYER2
+    three_piece_score = 3
     start_time = time.time()
-    best_move, Node.instances = iterative_deepening_bitstring(board, agent_piece,maxdepth=max_depth)
+    best_move, Node.instances = iterative_deepening_bitstring(board, agent_piece,maxdepth=max_depth,three_piece = three_piece_score)
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(board_string)
