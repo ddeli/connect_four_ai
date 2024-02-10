@@ -87,6 +87,7 @@ if __name__ == "__main__":
     for i in range(3):
         iterator=[x for x in range(3) if x != i]
         for j in iterator:
+            print(players[i], players[j])
             partial_agent_move1=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[i], two_piece=connected_two_pieces[i],method='pv')
             partial_agent_move2=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[j], two_piece=connected_two_pieces[j],method='pv')
        

@@ -115,7 +115,7 @@ def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state =
     Returns:
         tuple[int, dict]: A tuple containing the best move and a dictionary containing information about the search.
     """
-    Node.reset()
+    # Node.reset()
     set_players_pieces(agent_piece)
     parent_board = board_to_bitstring(board)
     # parent_board = copy.deepcopy(board)
@@ -168,7 +168,7 @@ def check_terminal(board:list[str,str], playerview:PlayerView) -> tuple[bool,int
     # from the minimizer's point of view, maximizer's win is alway -1000.
     # the same is true for maximizer's point of view.
     if lastmove_result == GameState.IS_WIN:
-        terminal, terminal_score = True, float('-inf')
+        terminal, terminal_score = True, -1000 # float('-inf')
     elif lastmove_result == GameState.IS_DRAW:
         terminal, terminal_score = True, 0
     return terminal, terminal_score

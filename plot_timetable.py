@@ -43,7 +43,7 @@ for i in range(len(player_game_timetable['pv'])):
     #plt.xlabel('agent move #')
     plt.ylabel('move time (s)')
     plt.xticks(range(0,20,5))
-    plt.ylim(0,7)
+    plt.ylim(0,50)
     plt.legend(['principle-of-variation'], fontsize=8)
 
     plt.subplot(2,2,2)
@@ -51,7 +51,7 @@ for i in range(len(player_game_timetable['pv'])):
     #plt.xlabel('agent move #')
     #plt.ylabel('move time (s)')
     plt.xticks(range(0,20,5))
-    plt.ylim(0,7)
+    plt.ylim(0,50)
     plt.legend(['left-to-right'], fontsize=8)
 
     plt.subplot(2,2,3)
@@ -59,7 +59,7 @@ for i in range(len(player_game_timetable['pv'])):
     plt.xlabel('agent move #')
     plt.ylabel('move time (s)')
     plt.xticks(range(0,20,5))
-    plt.ylim(0,7)
+    plt.ylim(0,50)
     plt.legend(['random'], fontsize=8)
     
     plt.subplot(2,2,4)
@@ -67,7 +67,7 @@ for i in range(len(player_game_timetable['pv'])):
     plt.xlabel('agent move #')
     #plt.ylabel('move time (s)')
     plt.xticks(range(0,20,5))
-    plt.ylim(0,7)
+    plt.ylim(0,50)
     plt.legend(['middle'], fontsize=8)
     
 
