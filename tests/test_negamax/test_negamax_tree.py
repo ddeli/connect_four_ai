@@ -57,9 +57,9 @@ def test_all_in_place():
     print()
     print(bit_board)
 
+    Node.reset()
     Node.skip_order = False
     Node.skip_null_window = True
     Node.skip_iterative_deepening = False
-    Node.reset()
 
     iterative_deepening_bitstring(board, agent_piece=PLAYER1)

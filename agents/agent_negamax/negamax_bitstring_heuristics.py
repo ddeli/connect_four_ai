@@ -115,6 +115,7 @@ def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state =
     Returns:
         tuple[int, dict]: A tuple containing the best move and a dictionary containing information about the search.
     """
+    Node.reset()
     set_players_pieces(agent_piece)
     parent_board = board_to_bitstring(board)
     # parent_board = copy.deepcopy(board)

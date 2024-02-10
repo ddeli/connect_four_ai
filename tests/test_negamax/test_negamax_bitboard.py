@@ -180,6 +180,7 @@ def test_all_in_place():
     print()
     print(bit_board)
 
+    Node.reset()
     Node.skip_order = False
     Node.skip_null_window = False
     Node.skip_iterative_deepening = False
