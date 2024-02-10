@@ -35,7 +35,7 @@ class Node():
     skip_null_window = False
     skip_iterative_deepening = False
 
-    def __init__(self, nodenumber:int, board:list[str,str], depth:int=None, parent:int=None, parent_move:int=None, best_score:int=None, best_move:int=None, best_child:int=None, leaf_score:int=None):
+    def __init__(self, nodenumber:int, board:list[str,str], depth:int=None, parent:int=None, parent_piece:BoardPiece=None, parent_move:int=None, best_score:int=None, best_move:int=None, best_child:int=None, leaf_score:int=None, terminal:bool=False):
         """
         Initialize a Node instance.
 
@@ -52,6 +52,7 @@ class Node():
         """
         self.nodenumber = nodenumber
         self.board = board
+        self.parent_piece = parent_piece
         self.depth = depth
         self.parent = parent
         self.parent_move = parent_move
@@ -59,6 +60,7 @@ class Node():
         self.best_child = best_child
         self.best_score = best_score
         self.leaf_score = leaf_score
+        self.terminal = terminal
         Node.instances[nodenumber] = self
     
     def print_node(self):
@@ -74,11 +76,13 @@ board:
 {self.board}
 depth: {self.depth}
 parent: {parent}
+parent_piece: {self.parent_piece}
 parent_move: {parent_move}
 best move: {self.best_move}
 best child: {child}
 best score: {self.best_score}
 leaf score: {self.leaf_score}
+terminal: {self.terminal}
     ''') 
 
     @classmethod
@@ -209,6 +213,7 @@ def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), 
 
     terminal, terminal_score = check_terminal(parent_board, playerview)
     if terminal:
+        Node.instances[Node.nodenumber].terminal = True
         return -terminal_score, Node.nodenumber
     elif depth == 0:  
         leaf_score = evaluate_board(parent_board, Node.agent_piece, threepiece_score=three_piece, twopiece_score=two_piece)*playerview
@@ -228,7 +233,7 @@ def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), 
         player_piece = get_player_piece(playerview)
         apply_player_action_bitstring(child_board, move, player_piece)
         Node.nodenumber += 1
-        Node(Node.nodenumber, child_board, depth-1, parent=current_nodenumber, parent_move=move)
+        Node(Node.nodenumber, child_board, depth-1, parent=current_nodenumber, parent_piece=player_piece, parent_move=move)
 
         if first_move or Node.skip_null_window:
             board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
