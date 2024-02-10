@@ -122,7 +122,7 @@ def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state =
     mindepth = maxdepth if Node.skip_iterative_deepening else 1
     for depth in range(mindepth, maxdepth+1):
         Node.reset()
-        print(f'\n***start analysing depth: {depth} ***')
+        # print(f'\n***start analysing depth: {depth} ***')
         Node(Node.nodenumber, parent_board, depth)
         negamax(parent_board, depth, three_piece=three_piece, two_piece=two_piece,method=method)
         Node.pv = []
