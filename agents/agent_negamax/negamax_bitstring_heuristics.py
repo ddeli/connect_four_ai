@@ -249,6 +249,7 @@ def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), 
         if prune: break
         first_move = False
 
+    if best_score == float('-inf'): Node.instances[current_nodenumber].best_move = moves[0]
     return -best_score, current_nodenumber
 
 def update_bestscore_bestmove(board_score:int, best_score:int, move:int, best_move:int, current_nodenumber:int, child_node_number:int)-> tuple[int,int]:
@@ -307,6 +308,7 @@ def get_pv(nodenumber:int=0) -> None:
     if best_move == None: return
     Node.pv.append(best_move)
     best_child_nodenumber = node.best_child
+    if best_child_nodenumber == None: return
     get_pv(best_child_nodenumber)
 
 def order_moves(moves: list[int], method: str = "pv") -> list[int]:
