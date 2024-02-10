@@ -122,7 +122,7 @@ def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state =
     mindepth = maxdepth if Node.skip_iterative_deepening else 1
     for depth in range(mindepth, maxdepth+1):
         Node.reset()
-        #print(f'\n***start analysing depth: {depth} ***')
+        print(f'\n***start analysing depth: {depth} ***')
         Node(Node.nodenumber, parent_board, depth)
         negamax(parent_board, depth, three_piece=three_piece, two_piece=two_piece,method=method)
         Node.pv = []
@@ -168,7 +168,7 @@ def check_terminal(board:list[str,str], playerview:PlayerView) -> tuple[bool,int
     # from the minimizer's point of view, maximizer's win is alway -1000.
     # the same is true for maximizer's point of view.
     if lastmove_result == GameState.IS_WIN:
-        terminal, terminal_score = True, -1000
+        terminal, terminal_score = True, float('-inf')
     elif lastmove_result == GameState.IS_DRAW:
         terminal, terminal_score = True, 0
     return terminal, terminal_score
