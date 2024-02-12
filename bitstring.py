@@ -59,7 +59,16 @@ def connected_four_bitstring(binary_str: str, player: BoardPiece) -> bool:
     return False
 
 
-def apply_player_action_bitstring(bitstring_array: str, action: PlayerAction, player: BoardPiece):#-> str:
+def apply_player_action_bitstring(bitstring_array: str, action: PlayerAction, player: BoardPiece):
+    """
+    Sets player bitstring = 1, for the representation of the lowest open row. The input
+    string will be modified in place.
+
+    :param: bitstring_array: current board state as a bitstring array
+    :param: action: player move to apply
+    :param: player: current player
+    """
+
     if player == 1:
         binary_player = bitstring_array[0]
         binary_opponent = bitstring_array[1]
@@ -73,11 +82,14 @@ def apply_player_action_bitstring(bitstring_array: str, action: PlayerAction, pl
             modified_binary = ''.join(string_list)
             bitstring_array[player - 1] = modified_binary
             break
-    #return bitstring_array
 
 
 def calculate_score_bitstring(binary_array: str) -> int:
-
+    """
+    A function to evaluate each move and give it a score
+    :param binary_array: current game state
+    :return: calculated score of a move
+    """
     score = 0
     for player in range(0, 2):
         for bit in binary_array[player]:
@@ -87,7 +99,12 @@ def calculate_score_bitstring(binary_array: str) -> int:
 
 
 def bitstring_to_board(binary_array: str, player: BoardPiece) -> np.ndarray:
-
+    """
+    A function to evaluate each move and give it a score
+    :param: binary_array: current game state
+    :param: player: current player
+    :return: array representation of the given board
+    """
     if player == 1:
         binary = binary_array[0]
     else:
@@ -109,13 +126,20 @@ def bitstring_to_board(binary_array: str, player: BoardPiece) -> np.ndarray:
 
 
 def check_for_draw_bitstring(binary: str) -> bool:
+    """
+    A function to evaluate if there is a draw
+    :param: binary: current game state
+    :return: bool
+    """
     bin_player1 = binary[0]
     bin_player2 = binary[1]
 
     for i in range(0, 7):
-        if bin_player1[5+i*7] == '0' or bin_player2[5+i*7] == '0':
+        if bin_player1[5+i*7] == '0' and bin_player2[5+i*7] == '0':
             return False
     return True
+
+
 def check_end_state_bitstring(binary: str, player: BoardPiece) -> GameState:
     """
     Returns the current game state for the current `player`, i.e. has their last
@@ -134,18 +158,28 @@ def check_end_state_bitstring(binary: str, player: BoardPiece) -> GameState:
 
 
 def copy_bitstring_array(bitstring_array) -> str:
+    """
+    A helper function to copy a bitstring array
+    :param: bitstring_array: current game state
+    :return: Copy of the given bitstring array
+    """
     bitstring1 = '' + bitstring_array[0]
     bitstring2 = '' + bitstring_array[1]
     return [bitstring1,bitstring2]
 
 
 def get_valid_moves_bitstring(bitstring_array) -> list[int]:
+    """
+    A function to find valid moves left
+    :param: bitstring_array: current game state
+    :return: Integer Array of possible moves
+    """
     bin_player1 = bitstring_array[0]
     bin_player2 = bitstring_array[1]
     valid_moves = []
 
     for i in range(0, 7):
-        if (bin_player1[5 + i * 7] == '0' and bin_player2[5 + i * 7] == '0'):
+        if bin_player1[5 + i * 7] == '0' and bin_player2[5 + i * 7] == '0':
             valid_moves.append(i)
 
     return valid_moves

@@ -35,7 +35,7 @@ class Node():
     skip_null_window = False
     skip_iterative_deepening = False
 
-    def __init__(self, nodenumber:int, board:list[str,str], depth:int=None, parent:int=None, parent_move:int=None, best_score:int=None, best_move:int=None, best_child:int=None, leaf_score:int=None):
+    def __init__(self, nodenumber:int, board:list[str,str], depth:int=None, parent:int=None, parent_piece:BoardPiece=None, parent_move:int=None, best_score:int=None, best_move:int=None, best_child:int=None, leaf_score:int=None, terminal:bool=False):
         """
         Initialize a Node instance.
 
@@ -52,6 +52,7 @@ class Node():
         """
         self.nodenumber = nodenumber
         self.board = board
+        self.parent_piece = parent_piece
         self.depth = depth
         self.parent = parent
         self.parent_move = parent_move
@@ -59,6 +60,7 @@ class Node():
         self.best_child = best_child
         self.best_score = best_score
         self.leaf_score = leaf_score
+        self.terminal = terminal
         Node.instances[nodenumber] = self
     
     def print_node(self):
@@ -74,11 +76,13 @@ board:
 {self.board}
 depth: {self.depth}
 parent: {parent}
+parent_piece: {self.parent_piece}
 parent_move: {parent_move}
 best move: {self.best_move}
 best child: {child}
 best score: {self.best_score}
 leaf score: {self.leaf_score}
+terminal: {self.terminal}
     ''') 
 
     @classmethod
@@ -115,13 +119,14 @@ def iterative_deepening_bitstring(board, agent_piece: BoardPiece,  saved_state =
     Returns:
         tuple[int, dict]: A tuple containing the best move and a dictionary containing information about the search.
     """
+    # Node.reset()
     set_players_pieces(agent_piece)
     parent_board = board_to_bitstring(board)
     # parent_board = copy.deepcopy(board)
     mindepth = maxdepth if Node.skip_iterative_deepening else 1
     for depth in range(mindepth, maxdepth+1):
         Node.reset()
-        #print(f'\n***start analysing depth: {depth} ***')
+        # print(f'\n***start analysing depth: {depth} ***')
         Node(Node.nodenumber, parent_board, depth)
         negamax(parent_board, depth, three_piece=three_piece, two_piece=two_piece,method=method)
         Node.pv = []
@@ -167,7 +172,7 @@ def check_terminal(board:list[str,str], playerview:PlayerView) -> tuple[bool,int
     # from the minimizer's point of view, maximizer's win is alway -1000.
     # the same is true for maximizer's point of view.
     if lastmove_result == GameState.IS_WIN:
-        terminal, terminal_score = True, -1000
+        terminal, terminal_score = True, float('-inf')
     elif lastmove_result == GameState.IS_DRAW:
         terminal, terminal_score = True, 0
     return terminal, terminal_score
@@ -187,7 +192,7 @@ def get_player_piece(playerview:PlayerView)->BoardPiece:
     return player_piece
 
 
-def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView, three_piece:int=2, two_piece:int=1, method:str="pv") -> tuple[float, int]:
+def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView, three_piece:int=2, two_piece:int=1, method:str="pv") -> tuple[int, int]:
     """
     Perform negamax and null winodw search to find the best move.
 
@@ -208,6 +213,7 @@ def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), 
 
     terminal, terminal_score = check_terminal(parent_board, playerview)
     if terminal:
+        Node.instances[Node.nodenumber].terminal = True
         return -terminal_score, Node.nodenumber
     elif depth == 0:  
         leaf_score = evaluate_board(parent_board, Node.agent_piece, threepiece_score=three_piece, twopiece_score=two_piece)*playerview
@@ -227,23 +233,44 @@ def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), 
         player_piece = get_player_piece(playerview)
         apply_player_action_bitstring(child_board, move, player_piece)
         Node.nodenumber += 1
-        Node(Node.nodenumber, child_board, depth-1, parent=current_nodenumber, parent_move=move)
+        Node(Node.nodenumber, child_board, depth-1, parent=current_nodenumber, parent_piece=player_piece, parent_move=move)
 
         if first_move or Node.skip_null_window:
             board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
         else:
-            mark_nodenumber = Node.nodenumber
-            board_score, child_nodenumber = negamax(child_board, depth-1, -(alpha+1), -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
-            if alpha < board_score < beta:
-                Node.nodenumber = mark_nodenumber
-                board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
+            board_score, child_nodenumber = null_window(child_board, depth, alpha, beta, playerview, three_piece, two_piece, method)
 
         best_score, best_move = update_bestscore_bestmove(board_score, best_score, move, best_move, current_nodenumber, child_nodenumber)
         prune, alpha, beta = check_prune(board_score, alpha, beta)
         if prune: break
         first_move = False
 
+    if best_score == float('-inf'): Node.instances[current_nodenumber].best_move = moves[0]
     return -best_score, current_nodenumber
+
+def null_window(child_board:list[str,str], depth:int, alpha:float, beta:float, playerview:PlayerView, three_piece:int, two_piece:int, method:str)->tuple[int,int]:
+    """
+    perofrms a null window search and checks for the null windows assumption. if the assumption faisl, peformes a research with a wide window.
+
+    Parameters:
+    - child_board (list[str,str]): Description of the parameter.
+    - depth (int): Description of the parameter.
+    - alpha (int): Description of the parameter.
+    - beta (int): Description of the parameter.
+    - playerview (PlayerView): Description of the parameter.
+    - three_piece (int): Description of the parameter.
+    - two_piece (int): Description of the parameter.
+    - method (str): Description of the parameter.
+
+    Returns:
+    Tuple[int, int]: A tuple containing the board score and the number of nodes evaluated.
+    """
+    mark_nodenumber = Node.nodenumber
+    board_score, child_nodenumber = negamax(child_board, depth-1, -(alpha+1), -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
+    if alpha < board_score < beta:
+        Node.nodenumber = mark_nodenumber
+        board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
+    return board_score, child_nodenumber
 
 def update_bestscore_bestmove(board_score:int, best_score:int, move:int, best_move:int, current_nodenumber:int, child_node_number:int)-> tuple[int,int]:
     """
@@ -301,6 +328,7 @@ def get_pv(nodenumber:int=0) -> None:
     if best_move == None: return
     Node.pv.append(best_move)
     best_child_nodenumber = node.best_child
+    if best_child_nodenumber == None: return
     get_pv(best_child_nodenumber)
 
 def order_moves(moves: list[int], method: str = "pv") -> list[int]:

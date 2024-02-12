@@ -94,8 +94,8 @@ if __name__ == "__main__":
             print(f'game_{k} = {methods[i], methods[j]}')
             game_players[f'game{k}']=[methods[i], methods[j]]
 
-            partial_agent_move1=partial(iterative_deepening_bitstring, method=methods[i])
-            partial_agent_move2=partial(iterative_deepening_bitstring,method=methods[j])
+            partial_agent_move1=partial(iterative_deepening_bitstring, three_piece=8, two_piece=1, method=methods[i])
+            partial_agent_move2=partial(iterative_deepening_bitstring, three_piece=8, two_piece=1, method=methods[j])
             output=agent_vs_agent_timing(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
             game_score[f'game{k}']=output
             k+=1

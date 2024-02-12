@@ -87,10 +87,11 @@ if __name__ == "__main__":
     for i in range(3):
         iterator=[x for x in range(3) if x != i]
         for j in iterator:
-            partial_agent_move1=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[i], two_piece=connected_two_pieces[i])
-            partial_agent_move2=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[j], two_piece=connected_two_pieces[j])
-        #(board, PLAYER1,threepiece_score=connected_three_pieces[i], twopiece_score=connected_two_pieces[i])
-        #(board,PLAYER2,threepiece_score=connected_three_pieces[j], twopiece_score=connected_two_pieces[j])
+
+            print(players[i], players[j])
+            partial_agent_move1=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[i], two_piece=connected_two_pieces[i],method='pv')
+            partial_agent_move2=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[j], two_piece=connected_two_pieces[j],method='pv')
+
             output=agent_vs_agent(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
             if output[0]==1: 
                 game_score[players[i]].append(output[1])

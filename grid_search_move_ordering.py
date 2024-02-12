@@ -19,8 +19,8 @@ if __name__ == "__main__":
     for i in range(4):
         iterator=[x for x in range(4) if x != i]
         for j in iterator:
-            partial_agent_move1=partial(iterative_deepening_bitstring, method=methods[i])
-            partial_agent_move2=partial(iterative_deepening_bitstring,method=methods[j])
+            partial_agent_move1=partial(iterative_deepening_bitstring, three_piece=8, two_piece=1, method=methods[i])
+            partial_agent_move2=partial(iterative_deepening_bitstring,three_piece=8, two_piece=1, method=methods[j])
        
             output=agent_vs_agent(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
             if output[0]==1: 

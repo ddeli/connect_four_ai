@@ -58,7 +58,7 @@ def test_check_terminal():
     terminal, terminal_score = check_terminal(bit_board,playerview=-1)
 
     assert terminal == True
-    assert terminal_score == -1000
+    assert terminal_score == float('-inf')
 
 def test_set_players_pieces():
     Node.reset()
@@ -158,44 +158,3 @@ def test_order_moves_pv():
     assert moves_3 == [3, 2, 1, 5, 0]
     assert moves_4 == [3, 2, 1, 5, 0]
     assert moves_5 == [2, 1, 0, 5, 3]
-
-def test_all_in_place():
-    """
-    this is used for step by step sanity checks and debugging.
-    also for timing the agent in different scenarios and for different inputs.
-    """
-    board_string = ''' 
-     - - - - - - - 
-    |             |
-    |             |
-    |             |
-    |             |
-    |      O      |
-    |      X X    |
-     - - - - - - -
-     0 1 2 3 4 5 6
-    '''
-    board = string_to_board(board_string)
-    bit_board = board_to_bitstring(board)
-    print()
-    print(bit_board)
-
-    Node.skip_order = False
-    Node.skip_null_window = True
-    Node.skip_iterative_deepening = True
-
-    max_depth = 7
-    agent_piece = PLAYER2
-    start_time = time.time()
-    best_move, Node.instances = iterative_deepening_bitstring(board, agent_piece,maxdepth=max_depth)
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(board_string)
-    print(f'player: {agent_piece}')
-    print(f'iterative deepening: {Node.skip_iterative_deepening}')
-    print(f'Null Window: {Node.skip_null_window}')
-    print(f'elapsed time is {elapsed_time}')
-    print(f'Nodenumber is {Node.nodenumber}')
-    print(f'Nodes visited are {Node.hitcount}')
-    print(f'max depth is {max_depth}')
-    print(f'principle variation: {Node.pv}')
