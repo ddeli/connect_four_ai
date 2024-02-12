@@ -172,7 +172,7 @@ def check_terminal(board:list[str,str], playerview:PlayerView) -> tuple[bool,int
     # from the minimizer's point of view, maximizer's win is alway -1000.
     # the same is true for maximizer's point of view.
     if lastmove_result == GameState.IS_WIN:
-        terminal, terminal_score = True, -1000 # float('-inf')
+        terminal, terminal_score = True, float('-inf')
     elif lastmove_result == GameState.IS_DRAW:
         terminal, terminal_score = True, 0
     return terminal, terminal_score
