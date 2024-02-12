@@ -192,7 +192,7 @@ def get_player_piece(playerview:PlayerView)->BoardPiece:
     return player_piece
 
 
-def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView, three_piece:int=2, two_piece:int=1, method:str="pv") -> tuple[float, int]:
+def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), beta:float = float('inf'), playerview:PlayerView = MaxView, three_piece:int=2, two_piece:int=1, method:str="pv") -> tuple[int, int]:
     """
     Perform negamax and null winodw search to find the best move.
 
@@ -248,7 +248,23 @@ def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), 
     if best_score == float('-inf'): Node.instances[current_nodenumber].best_move = moves[0]
     return -best_score, current_nodenumber
 
-def null_window(child_board, depth, alpha, beta, playerview, three_piece, two_piece, method):
+def null_window(child_board:list[str,str], depth:int, alpha:float, beta:float, playerview:PlayerView, three_piece:int, two_piece:int, method:str)->tuple[int,int]:
+    """
+    perofrms a null window search and checks for the null windows assumption. if the assumption faisl, peformes a research with a wide window.
+
+    Parameters:
+    - child_board (list[str,str]): Description of the parameter.
+    - depth (int): Description of the parameter.
+    - alpha (int): Description of the parameter.
+    - beta (int): Description of the parameter.
+    - playerview (PlayerView): Description of the parameter.
+    - three_piece (int): Description of the parameter.
+    - two_piece (int): Description of the parameter.
+    - method (str): Description of the parameter.
+
+    Returns:
+    Tuple[int, int]: A tuple containing the board score and the number of nodes evaluated.
+    """
     mark_nodenumber = Node.nodenumber
     board_score, child_nodenumber = negamax(child_board, depth-1, -(alpha+1), -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
     if alpha < board_score < beta:
