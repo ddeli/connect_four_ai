@@ -42,12 +42,12 @@ def test_all_in_place():
 
     board_string = ''' 
      - - - - - - - 
-    |  O   O      |
-    |  X   X X    |
-    |  O   O X    |
-    |  X   X O    |
-    |  X   O X X  |
-    |  O   X O O  |
+    |             |
+    |             |
+    |             |
+    |             |
+    |      O      |
+    |      X X    |
      - - - - - - -
      0 1 2 3 4 5 6
     '''
@@ -64,9 +64,9 @@ def test_all_in_place():
     Node.skip_null_window = False
     Node.skip_iterative_deepening = False
 
-    max_depth = 6
+    max_depth = 7
     agent_piece = PLAYER2
-    three_piece_score = 3
+    three_piece_score = 2
     start_time = time.time()
     best_move, Node.instances = iterative_deepening_bitstring(board, agent_piece,maxdepth=max_depth,three_piece = three_piece_score)
     end_time = time.time()

@@ -238,11 +238,7 @@ def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), 
         if first_move or Node.skip_null_window:
             board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
         else:
-            mark_nodenumber = Node.nodenumber
-            board_score, child_nodenumber = negamax(child_board, depth-1, -(alpha+1), -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
-            if alpha < board_score < beta:
-                Node.nodenumber = mark_nodenumber
-                board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
+            board_score, child_nodenumber = null_window(child_board, depth, alpha, beta, playerview, three_piece, two_piece, method)
 
         best_score, best_move = update_bestscore_bestmove(board_score, best_score, move, best_move, current_nodenumber, child_nodenumber)
         prune, alpha, beta = check_prune(board_score, alpha, beta)
@@ -251,6 +247,14 @@ def negamax(parent_board:list[str,str], depth:int, alpha:float = float('-inf'), 
 
     if best_score == float('-inf'): Node.instances[current_nodenumber].best_move = moves[0]
     return -best_score, current_nodenumber
+
+def null_window(child_board, depth, alpha, beta, playerview, three_piece, two_piece, method):
+    mark_nodenumber = Node.nodenumber
+    board_score, child_nodenumber = negamax(child_board, depth-1, -(alpha+1), -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
+    if alpha < board_score < beta:
+        Node.nodenumber = mark_nodenumber
+        board_score, child_nodenumber = negamax(child_board, depth-1, -beta, -alpha, -playerview, three_piece=three_piece, two_piece=two_piece, method=method)
+    return board_score, child_nodenumber
 
 def update_bestscore_bestmove(board_score:int, best_score:int, move:int, best_move:int, current_nodenumber:int, child_node_number:int)-> tuple[int,int]:
     """
