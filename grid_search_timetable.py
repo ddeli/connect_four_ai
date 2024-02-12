@@ -17,9 +17,25 @@ def agent_vs_agent_timing(
     import time
     from game_utils import PLAYER1, PLAYER2, PLAYER1_PRINT, PLAYER2_PRINT, GameState, MoveStatus
     from game_utils import initialize_game_state, pretty_print_board, apply_player_action, check_end_state, check_move_status
+    """
+    Plays a game between two agents.
 
+    Parameters:
+    - generate_move_1 (GenMove): Function that generates a move for player 1.
+    - generate_move_2 (GenMove): Function that generates a move for player 2.
+    - player_1 (str): Name of player 1 (default is "Player 1").
+    - player_2 (str): Name of player 2 (default is "Player 2").
+    - args_1 (tuple): Additional arguments for generate_move_1 (default is an empty tuple).
+    - args_2 (tuple): Additional arguments for generate_move_2 (default is an empty tuple).
+    - init_1 (Callable): Initialization function for player 1 (default is a lambda function doing nothing).
+    - init_2 (Callable): Initialization function for player 2 (default is a lambda function doing nothing).
+
+    Returns:
+    Dict[player]: A dict containing the time moves for both players
+        
+    """
     players = (PLAYER1, PLAYER2)
-    for play_first in (1, -1):
+    for play_first in (1, -1): #the loop breaks at the end of the game
         for init, player in zip((init_1, init_2)[::play_first], players):
             init(initialize_game_state(), player)
 
@@ -88,6 +104,7 @@ if __name__ == "__main__":
     k=0
     game_players={}
     
+    #running the loops, range(4) because we have only 4 move ordering methods
     for i in range(4):
         iterator=[x for x in range(4) if x != i]
         for j in iterator:
@@ -103,38 +120,4 @@ if __name__ == "__main__":
     np.save(r'connect_four_ai\results\game_players_move_ordering_timetable.npy', game_players)
     print(game_score)
     np.save(r'connect_four_ai\results\game_score_move_ordering_timetable.npy', game_score)
-        
-# if __name__ == "__main__":
- 
-#     from functools import partial
-   
-#     from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring
-    
-#     methods=["pv", "ltr", "random", "middle"]
-#     game_score={}
-#     for i in range(4):
-#         game_score[methods[i]]=[]
-    
-#     for i in range(4):
-#         iterator=[x for x in range(4) if x != i]
-#         for j in iterator:
-#             partial_agent_move1=partial(iterative_deepening_bitstring, method=methods[i])
-#             partial_agent_move2=partial(iterative_deepening_bitstring,method=methods[j])
-       
-#             output=agent_vs_agent(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
-#             if output[0]==1: 
-#                 game_score[methods[i]].append(output[1])
-
-#                 if output[1]==1:
-#                     game_score[methods[j]].append(1)
-#                 else:
-#                     game_score[methods[j]].append(0)
-#             else:
-#                 game_score[methods[j]].append(output[1])
-#                 if output[1]==1:
-#                     game_score[methods[i]].append(1)
-#                 else:
-#                     game_score[methods[i]].append(0)
-#     print(game_score)
-#     np.save('game_score_move_ordering.npy', game_score)
         
