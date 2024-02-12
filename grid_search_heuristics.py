@@ -17,7 +17,28 @@ def agent_vs_agent(
     from game_utils import PLAYER1, PLAYER2, PLAYER1_PRINT, PLAYER2_PRINT, GameState, MoveStatus
     from game_utils import initialize_game_state, pretty_print_board, apply_player_action, check_end_state, check_move_status
 
+
+    """
+    Plays a game between two agents.
+
+    Parameters:
+    - generate_move_1 (GenMove): Function that generates a move for player 1.
+    - generate_move_2 (GenMove): Function that generates a move for player 2.
+    - player_1 (str): Name of player 1 (default is "Player 1").
+    - player_2 (str): Name of player 2 (default is "Player 2").
+    - args_1 (tuple): Additional arguments for generate_move_1 (default is an empty tuple).
+    - args_2 (tuple): Additional arguments for generate_move_2 (default is an empty tuple).
+    - init_1 (Callable): Initialization function for player 1 (default is a lambda function doing nothing).
+    - init_2 (Callable): Initialization function for player 2 (default is a lambda function doing nothing).
+
+    Returns:
+    Tuple[int, int]: A tuple containing the result of the game for each player:
+        - The first integer represents the winning player (1 for player 1, 2 for player 2, 0 for a draw).
+        - The second integer represents the result status (0 for loss, 1 for draw, 2 for win).
+    """
+
     players = (PLAYER1, PLAYER2)
+    # since the program returns the values this for loop only goes to the first player
     for play_first in (1, -1):
         for init, player in zip((init_1, init_2)[::play_first], players):
             init(initialize_game_state(), player)
@@ -78,10 +99,10 @@ if __name__ == "__main__":
     from agents.agent_negamax.negamax_bitstring_heuristics import iterative_deepening_bitstring
     connected_three_pieces=[2, 8, 0]
     connected_two_pieces=[1, 1, 0]
- 
+    # grid search over the heuristics so that we can play the games
     players=['Player_heuristic_21', 'Player_heuristic_81', 'Player_noheuristic_00'] # heuristic_# means that the three piece score is #
     game_score={}
-    for i in range(3):
+    for i in range(3): # range(3) because we only have 3 heuristics that we test
         game_score[players[i]]=[]
     
     for i in range(3):
@@ -93,14 +114,15 @@ if __name__ == "__main__":
             partial_agent_move2=partial(iterative_deepening_bitstring,three_piece=connected_three_pieces[j], two_piece=connected_two_pieces[j],method='pv')
 
             output=agent_vs_agent(generate_move_1=partial_agent_move1,generate_move_2=partial_agent_move2 ) 
-            if output[0]==1: 
+            if output[0]==1: # the output[0] is the agent who last placed the move for win or draw
+                # if it was agent 1 then it is the agent that loops over i
                 game_score[players[i]].append(output[1])
 
-                if output[1]==1:
+                if output[1]==1: # if game is draw then agent2 also gets score 1, else agent1 has won the game
                     game_score[players[j]].append(1)
                 else:
                     game_score[players[j]].append(0)
-            else:
+            else: # same as before but we check if agent2 played the last piece in the game (won or draw)
                 game_score[players[j]].append(output[1])
                 if output[1]==1:
                     game_score[players[i]].append(1)

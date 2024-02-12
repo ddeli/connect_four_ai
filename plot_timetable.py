@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
+# load the data
 game_players=np.load(r'connect_four_ai\results\game_players_move_ordering_timetable.npy', allow_pickle=True).item() #ended up not needing this
 game_timetable=np.load(r'connect_four_ai\results\game_score_move_ordering_timetable.npy',allow_pickle=True).item()
-
+# simply rearranging everything so that we can plot everything correctly 
+# appending the move times for the games that 'x' agent played 
 methods=["pv", "ltr", "random", "middle"]    
 k=0
 player_game_timetable={}
@@ -15,10 +16,11 @@ for i in range(4):
     for j in iterator:
         player1, method1=1, methods[i]
         player2, method2=2, methods[j]
-        player_game_timetable[method1].append(game_timetable[f'game{k}'][player1])
-        player_game_timetable[method2].append(game_timetable[f'game{k}'][player2])
+        player_game_timetable[method1].append(game_timetable[f'game{k}'][player1]) #its predictable always player1 is the player looping over i
+        player_game_timetable[method2].append(game_timetable[f'game{k}'][player2]) # player2 is the player looping over j
         k+=1
 
+# plot all the move times for all games and all agents
 for i in range(len(player_game_timetable['pv'])):
     plt.plot(player_game_timetable['pv'][i], color='red')
     plt.plot(player_game_timetable['ltr'][i], color='pink')
@@ -34,7 +36,7 @@ plt.show()
 plt.savefig(r'connect_four_ai\results\Figure_1.png')
 
 
-
+# plotting the move times for each agent separately
 plt.suptitle('Move time for agent with different move orders')
 for i in range(len(player_game_timetable['pv'])):
     
